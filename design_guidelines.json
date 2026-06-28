@@ -1,0 +1,129 @@
+{
+  "project_name": "Apex Stage Riggers",
+  "theme_and_archetype": {
+    "theme": "Dark Mode",
+    "archetype": "Archetype 4 (Swiss & High-Contrast) - Industrial & Tactical Variant",
+    "description": "Deep obsidian backgrounds combined with stark white technical typography and high-visibility safety yellow accents. Designed to feel like a high-end live event command center, communicating raw structural power, precision, and safety."
+  },
+  "colors": {
+    "base": {
+      "background": "#0A0A0A",
+      "surface": "#121212",
+      "surface_elevated": "#1A1A1A",
+      "border": "#27272A"
+    },
+    "text": {
+      "primary": "#FFFFFF",
+      "secondary": "#A1A1AA",
+      "muted": "#71717A",
+      "accent": "#FACC15"
+    },
+    "brand": {
+      "primary": "#FACC15",
+      "primary_hover": "#EAB308",
+      "danger": "#EF4444"
+    }
+  },
+  "typography": {
+    "font_families": {
+      "headings": "Cabinet Grotesk, Arial, sans-serif",
+      "body": "IBM Plex Mono, monospace, sans-serif"
+    },
+    "hierarchy": {
+      "h1": "text-5xl md:text-6xl+ font-black uppercase tracking-tighter leading-none text-white",
+      "h2": "text-4xl md:text-5xl font-bold uppercase tracking-tight text-white",
+      "h3": "text-2xl md:text-3xl font-bold uppercase tracking-tight text-white",
+      "body": "text-base font-normal leading-relaxed text-zinc-400 font-mono tracking-tight",
+      "overline": "text-xs font-bold uppercase tracking-[0.2em] text-yellow-400 font-mono"
+    },
+    "rules": "Never center headings. Align strictly left to maintain a rigid, blueprint-like grid. Typography should feel engineered."
+  },
+  "layout_and_spacing": {
+    "spacing_scale": "Generous scaling. Use p-8 or p-12 inside bordered containers to prevent collision. Major section gaps should be py-24 or py-32.",
+    "grid_system": "The Control Room Grid (Strict, Dense). Use grid-cols-1 md:grid-cols-4 lg:grid-cols-12 with gap-6.",
+    "alignment": "Strict Left Alignment. Tension through asymmetry. Never auto-center blocks unless explicitly inside a symmetrical 3D overlay."
+  },
+  "surfaces_and_borders": {
+    "cards": "Flat solid backgrounds (bg-[#121212]). Sharp edges (rounded-none). No shadows. 1px solid border-zinc-800.",
+    "glassmorphism": "BANNED. Use solid opaque surfaces or harsh grid borders to maintain the raw industrial aesthetic. No blurred translucent layers.",
+    "borders": "Expose the skeleton. Utilize 'border-collapse' styles to make sections look like technical spreadsheets or rigging blueprints."
+  },
+  "3d_strategy": {
+    "library": "@react-three/fiber, @react-three/drei",
+    "scene_setup": {
+      "background": "color '#0A0A0A'",
+      "fog": "fogExp2 '#0A0A0A' 0.02 (to simulate thick stage haze/smoke)",
+      "camera": "PerspectiveCamera positioned low, looking slightly upwards at the stage for a monumental 'hero' angle."
+    },
+    "lighting": {
+      "ambient": "Low intensity (0.1) pure white. Keep the environment very dark.",
+      "spotlights": "Dynamic SpotLights (Cyan, Magenta, or Pure White) casting down from the trusses. Use penumbra and high intensity to slice through the dark."
+    },
+    "objects": {
+      "stage": "Dark grey metallic plane or box with a rough material.",
+      "trusses": "Build simple grouped geometries (Boxes/Cylinders) mapped to a metallic material to act as overhead lighting trusses. They must be linked to a Y-axis position state to move up/down.",
+      "controls": "OrbitControls with restricted polar angles (preventing the user from looking under the floor)."
+    },
+    "ui_overlay": {
+      "positioning": "Absolute positioning over the canvas using HTML overlays.",
+      "control_panel": "A floating 'Control Panel' bento box in the bottom corner containing Toggle Switches (Lights On/Off) and Sliders (Truss Height). Connect these UI inputs directly to the React state controlling the 3D scene."
+    }
+  },
+  "components": {
+    "buttons": "Square/Sharp edges (rounded-none). Primary: bg-yellow-400 text-black hover:bg-yellow-500 font-bold uppercase transition-colors. Secondary: bg-transparent border-2 border-zinc-700 text-white hover:border-white transition-colors.",
+    "navigation": "Fixed header, bg-[#0A0A0A] border-b border-zinc-900. Logo left, Links right + 'Request Quote' Button.",
+    "forms": "Inputs: bg-[#121212] border border-zinc-800 text-white rounded-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 p-4 font-mono.",
+    "data_testid": "MANDATORY. Every button, input, toggle, section, and 3D control panel must have a descriptive kebab-case data-testid attribute."
+  },
+  "media_assets": {
+    "images": [
+      {
+        "url": "https://images.pexels.com/photos/17425777/pexels-photo-17425777.jpeg",
+        "category": "gallery",
+        "description": "Dramatic stage lighting setup, monochrome vibe."
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1670028514318-0ac718c0590d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1NzZ8MHwxfHNlYXJjaHwxfHxjb25jZXJ0JTIwc3RhZ2UlMjBsaWdodGluZyUyMHRydXNzfGVufDB8fHx8MTc4MjQxNjI3OXww&ixlib=rb-4.1.0&q=85",
+        "category": "gallery",
+        "description": "Concert stage lighting truss with crowd."
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1623090351083-90cce8ec842e?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzV8MHwxfHNlYXJjaHwxfHxjaW5lbWF0aWMlMjBldmVudCUyMGJhY2tzdGFnZSUyMGRhcmt8ZW58MHx8fHwxNzgyMTU3NTM2fDA&ixlib=rb-4.1.0&q=85",
+        "category": "services",
+        "description": "Dark room with spotlights, live event setup."
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1771942690809-49605caf6ec5?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzV8MHwxfHNlYXJjaHwzfHxjaW5lbWF0aWMlMjBldmVudCUyMGJhY2tzdGFnZSUyMGRhcmt8ZW58MHx8fHwxNzgyMTU3NTM2fDA&ixlib=rb-4.1.0&q=85",
+        "category": "about",
+        "description": "Stage curtain hanging closed in dark theater."
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1755925193287-275aa7fe64f0",
+        "category": "about_equipment",
+        "description": "Protective helmet and case - industrial safety."
+      }
+    ]
+  },
+  "tech_stack": {
+    "libraries": [
+      "three",
+      "@react-three/fiber",
+      "@react-three/drei",
+      "framer-motion",
+      "lucide-react",
+      "@phosphor-icons/react"
+    ],
+    "file_type_rules": "Use .js and .jsx ONLY. Do NOT use TypeScript (.tsx/.ts) or TypeScript type definitions."
+  },
+  "instructions_to_main_agent": [
+    "Build a single-page interactive landing for Apex Stage Riggers in JS (no TS).",
+    "Hero Section MUST be a full-screen or 80vh Canvas using @react-three/fiber and @react-three/drei.",
+    "Inside the Canvas, procedurally build a mock 3D stage with 'trusses' (use Box or Cylinder geometries grouped together) and SpotLights attached to them.",
+    "Add HTML UI overlay on top of the 3D Canvas (z-index, pointer-events-auto for interactive bits). This UI must act as an 'Engineering Control Panel' with buttons/sliders to raise/lower the 3D truss and toggle lights. Map these inputs to React state variables passed into the Canvas elements.",
+    "Implement the remaining sections below the Hero: Services (Bento Grid of technical capabilities), Projects/Gallery (use provided media URLs), About, and a Request a Quote form.",
+    "Typography: Use Cabinet Grotesk for headings and IBM Plex Mono for body via standard CDN or generic fonts. Enforce the Dark Theme (Obsidian) + Safety Yellow (#FACC15) Accent.",
+    "Use pure sharp edges (rounded-none). Absolutely NO rounded corners for cards/buttons to keep it brutal and technical.",
+    "Add 'data-testid' to all interactive elements, forms, and the 3D control panel for reliable testing.",
+    "Do NOT use placeholder image URLs. ONLY use the URLs provided in the media_assets object."
+  ]
+}
