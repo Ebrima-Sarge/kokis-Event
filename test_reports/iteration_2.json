@@ -1,0 +1,53 @@
+{
+  "summary": "Frontend-only re-test after hero refactor (scroll-driven cinematic camera + sticky canvas + removed Rig Control panel). All 9 requested behaviours verified. Camera framing visibly changes between overview (scrollY=0) and show view (scrollY≈1.5*vh). Headline opacity fades from 1 → ~0.37 while scrolling. Old control-panel/toggle-lights/toggle-beat/truss-height-slider testids are fully removed. Scrolling is NOT trapped — reachable scrollY=5330 with footer in viewport. Quote form validation + success flow (sonner toasts + status text) still work.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Landing.jsx now ~600 lines — still recommended to split Navbar/Hero/Services/Work/About/Quote/Footer into src/components/landing/*.jsx for maintainability.",
+    "THREE.Clock deprecation warning logged: 'THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.' This originates from @react-three/fiber internals; upgrade fiber when a version using THREE.Timer is available (informational only, not a bug).",
+    "Hero scroll listener attaches to window scroll with { passive: true } — good. useEffect cleanup properly removes listener. onScroll() invoked once at mount so opacity is initialized to '1' at top.",
+    "CameraRig uses smoothstep easing (p*p*(3-2*p)) with cam.position.lerp(tp, 0.08) — nice and smooth. tt.lerpVectors + cam.lookAt(tt) works fine without OrbitControls.",
+    "html { scroll-behavior: smooth } is active — anchor nav (nav-quote-btn) works but scrollY sampled 1.5s after click can still be mid-scroll; not a bug, just something for future testing agents to know.",
+    "Prototype quote form is intentionally client-side (sonner toast only, no persistence) — expected per spec, not a bug."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (skipped per request)", "frontend": "100% (9/9 requested behaviours)"},
+  "test_credentials": "None required.",
+  "seed_data_creation": "None.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Hero is a 230vh scroll container (h-[230vh]) with a sticky child (top-0 h-[100svh]) that hosts the R3F Canvas. scrollRef (a useRef) is passed into StageScene → CameraRig which lerps the camera between preset A (0,9.5,23) and preset B (7.5,2.2,11.5) based on 0..1 progress across the hero container. headlineRef opacity is inline-styled to Math.max(0, 1 - p*2.2) and hintRef to Math.max(0, 1 - p*4). Old ControlPanel + related testids (control-panel, toggle-lights-btn, toggle-beat-btn, truss-height-slider) are permanently removed. To sample scroll position programmatically use { behavior: 'instant' } because global scroll-behavior is 'smooth'. Full document height ≈ 6410px at 1920x1080; max scrollable = 5330. THREE.Clock deprecation is a harmless warning from @react-three/fiber.",
+  "verified_behaviours": {
+    "hero_section_renders_with_canvas": true,
+    "no_page_errors": true,
+    "console_warnings_only": ["THREE.Clock deprecation (fiber internal)"],
+    "control_panel_removed": true,
+    "toggle_lights_btn_removed": true,
+    "toggle_beat_btn_removed": true,
+    "truss_height_slider_removed": true,
+    "scroll_hint_present_with_text": "Scroll To Enter",
+    "hero_container_height_ratio_vs_vh": "2.30x (2484 / 1080)",
+    "document_scrollable_to_bottom": "scrollY reaches 5330 (max) and footer bounding rect enters viewport",
+    "headline_opacity_top": "1",
+    "headline_opacity_at_400px": "1",
+    "headline_opacity_at_1_5vh": "0.373219",
+    "camera_composition_changes_between_scroll_0_and_1_5vh": true,
+    "screenshots_captured": [".screenshots/scroll_0.jpg (overview)", ".screenshots/scroll_15vh.jpg (show view with stats strip visible)"],
+    "services_section_and_5_cards": true,
+    "work_section_and_4_items": true,
+    "about_section": true,
+    "quote_section_and_form": true,
+    "footer": true,
+    "nav_quote_btn_hero_quote_btn_hero_work_btn_present": true,
+    "empty_submit_toast": "Name and email are required.",
+    "success_submit_toast": "Quote request received — we'll be in touch. Prototype: data is not stored yet.",
+    "status_text_after_submit": "✓ Request logged (prototype)"
+  },
+  "rca of the issue": "No bugs found. All acceptance criteria of iteration_2 (scroll-driven camera, sticky canvas, removed control panel, fading headline, unchanged sections/form) verified via Playwright + visual screenshot diff."
+}

@@ -1,11 +1,7 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Toaster, toast } from "sonner";
 import {
-  Lightbulb,
-  LightbulbOff,
-  Activity,
-  MoveVertical,
   Anchor,
   Construction,
   ShieldCheck,
@@ -15,6 +11,7 @@ import {
   ArrowUpRight,
   Menu,
   X,
+  MoveDown,
 } from "lucide-react";
 import StageScene from "@/components/StageScene";
 
@@ -164,147 +161,99 @@ function Navbar() {
   );
 }
 
-/* ---------------- Control Panel overlay ---------------- */
-function ControlPanel({ lightsOn, setLightsOn, beatActive, setBeatActive, trussHeight, setTrussHeight }) {
-  return (
-    <div
-      data-testid="control-panel"
-      className="absolute bottom-5 left-5 right-5 md:right-auto md:w-[340px] bg-[#0d0d0d]/95 border border-zinc-800 z-20 pointer-events-auto"
-    >
-      <div className="flex items-center justify-between border-b border-zinc-800 px-4 py-2.5">
-        <span className="text-[10px] uppercase tracking-[0.25em] text-yellow-400">
-          // Rig Control
-        </span>
-        <span className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-zinc-500">
-          <span className="w-1.5 h-1.5 bg-green-400 animate-pulse" /> Live
-        </span>
-      </div>
-
-      <div className="p-4 space-y-4">
-        <div className="grid grid-cols-2 gap-3">
-          <button
-            data-testid="toggle-lights-btn"
-            onClick={() => setLightsOn((v) => !v)}
-            className={`flex items-center justify-center gap-2 py-3 text-xs font-bold uppercase tracking-wider border transition-colors ${
-              lightsOn
-                ? "bg-yellow-400 text-black border-yellow-400"
-                : "bg-transparent text-zinc-400 border-zinc-700 hover:border-white hover:text-white"
-            }`}
-          >
-            {lightsOn ? <Lightbulb size={15} /> : <LightbulbOff size={15} />}
-            Lights {lightsOn ? "On" : "Off"}
-          </button>
-          <button
-            data-testid="toggle-beat-btn"
-            onClick={() => setBeatActive((v) => !v)}
-            className={`flex items-center justify-center gap-2 py-3 text-xs font-bold uppercase tracking-wider border transition-colors ${
-              beatActive
-                ? "bg-yellow-400 text-black border-yellow-400"
-                : "bg-transparent text-zinc-400 border-zinc-700 hover:border-white hover:text-white"
-            }`}
-          >
-            <Activity size={15} />
-            Show {beatActive ? "On" : "Off"}
-          </button>
-        </div>
-
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <span className="flex items-center gap-1.5 text-[11px] uppercase tracking-widest text-zinc-400">
-              <MoveVertical size={13} /> Truss Height
-            </span>
-            <span className="text-[11px] text-yellow-400 tabular-nums">
-              {(trussHeight).toFixed(1)} m
-            </span>
-          </div>
-          <input
-            data-testid="truss-height-slider"
-            type="range"
-            min={3.5}
-            max={8}
-            step={0.1}
-            value={trussHeight}
-            onChange={(e) => setTrussHeight(parseFloat(e.target.value))}
-            className="w-full accent-yellow-400 cursor-pointer"
-          />
-        </div>
-
-        <p className="text-[10px] leading-relaxed text-zinc-600">
-          Drag to orbit · scroll to zoom · adjust the rig in real time
-        </p>
-      </div>
-    </div>
-  );
-}
-
-/* ---------------- Hero / Stage ---------------- */
+/* ---------------- Hero / Stage (scroll-driven cinematic camera) ---------------- */
 function Hero() {
-  const [lightsOn, setLightsOn] = useState(true);
-  const [beatActive, setBeatActive] = useState(true);
-  const [trussHeight, setTrussHeight] = useState(7);
+  const wrapRef = useRef(null);
+  const headlineRef = useRef(null);
+  const hintRef = useRef(null);
+  const scrollRef = useRef(0);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const el = wrapRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const total = el.offsetHeight - window.innerHeight;
+      const p = total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 0;
+      scrollRef.current = p;
+      if (headlineRef.current)
+        headlineRef.current.style.opacity = String(Math.max(0, 1 - p * 2.2));
+      if (hintRef.current)
+        hintRef.current.style.opacity = String(Math.max(0, 1 - p * 4));
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <section id="stage" data-testid="hero-section" className="relative h-[100svh] w-full overflow-hidden">
-      <div className="absolute inset-0 z-0">
-        <StageScene trussHeight={trussHeight} lightsOn={lightsOn} beatActive={beatActive} />
-      </div>
+    <section id="stage" data-testid="hero-section" ref={wrapRef} className="relative h-[230vh] w-full">
+      <div className="sticky top-0 h-[100svh] w-full overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <StageScene scrollRef={scrollRef} />
+        </div>
 
-      {/* gradient vignettes */}
-      <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-b from-[#0a0a0a]/80 via-transparent to-[#0a0a0a]" />
+        {/* gradient vignettes */}
+        <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-b from-[#070709]/70 via-transparent to-[#070709]" />
 
-      {/* headline */}
-      <div className="pointer-events-none absolute inset-0 z-10 flex flex-col justify-center">
-        <div className="mx-auto max-w-[1400px] w-full px-6">
-          <motion.p
-            {...fadeUp(0.1)}
-            className="text-xs uppercase tracking-[0.3em] text-yellow-400 mb-4"
-          >
-            Live Event Rigging & Structures
-          </motion.p>
-          <motion.h1
-            {...fadeUp(0.2)}
-            className="font-display font-black uppercase tracking-tighter leading-[0.85] text-5xl md:text-7xl lg:text-8xl max-w-4xl"
-          >
-            We Build The
-            <br />
-            <span className="text-yellow-400">Sky</span> Above
-            <br />
-            The Show.
-          </motion.h1>
-          <motion.p
-            {...fadeUp(0.35)}
-            className="mt-6 max-w-md text-sm md:text-base text-zinc-400 leading-relaxed"
-          >
-            Certified stagehands, riggers and structural crews for tours,
-            festivals and broadcast. Orbit the rig, then move it.
-          </motion.p>
-          <motion.div {...fadeUp(0.5)} className="mt-8 flex flex-wrap gap-3 pointer-events-auto">
-            <a
-              href="#quote"
-              data-testid="hero-quote-btn"
-              className="bg-yellow-400 text-black text-sm font-bold uppercase tracking-[0.15em] px-7 py-4 hover:bg-yellow-500 transition-colors"
+        {/* headline (fades out on scroll into the show) */}
+        <div
+          ref={headlineRef}
+          className="pointer-events-none absolute inset-0 z-10 flex flex-col justify-center"
+        >
+          <div className="mx-auto max-w-[1400px] w-full px-6">
+            <motion.p
+              {...fadeUp(0.1)}
+              className="text-xs uppercase tracking-[0.3em] text-yellow-400 mb-4"
             >
-              Request a Quote
-            </a>
-            <a
-              href="#work"
-              data-testid="hero-work-btn"
-              className="border-2 border-zinc-700 text-white text-sm font-bold uppercase tracking-[0.15em] px-7 py-4 hover:border-white transition-colors"
+              Live Event Rigging & Structures
+            </motion.p>
+            <motion.h1
+              {...fadeUp(0.2)}
+              className="font-display font-black uppercase tracking-tighter leading-[0.85] text-5xl md:text-7xl lg:text-8xl max-w-4xl"
             >
-              See Our Work
-            </a>
-          </motion.div>
+              We Build The
+              <br />
+              <span className="text-yellow-400">Sky</span> Above
+              <br />
+              The Show.
+            </motion.h1>
+            <motion.p
+              {...fadeUp(0.35)}
+              className="mt-6 max-w-md text-sm md:text-base text-zinc-400 leading-relaxed"
+            >
+              Certified stagehands, riggers and structural crews for tours,
+              festivals and broadcast. Scroll to step onto the stage.
+            </motion.p>
+            <motion.div {...fadeUp(0.5)} className="mt-8 flex flex-wrap gap-3 pointer-events-auto">
+              <a
+                href="#quote"
+                data-testid="hero-quote-btn"
+                className="bg-yellow-400 text-black text-sm font-bold uppercase tracking-[0.15em] px-7 py-4 hover:bg-yellow-500 transition-colors"
+              >
+                Request a Quote
+              </a>
+              <a
+                href="#work"
+                data-testid="hero-work-btn"
+                className="border-2 border-zinc-700 text-white text-sm font-bold uppercase tracking-[0.15em] px-7 py-4 hover:border-white transition-colors"
+              >
+                See Our Work
+              </a>
+            </motion.div>
+          </div>
+        </div>
+
+        {/* scroll hint */}
+        <div
+          ref={hintRef}
+          data-testid="scroll-hint"
+          className="pointer-events-none absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 text-zinc-500"
+        >
+          <span className="text-[10px] uppercase tracking-[0.3em]">Scroll To Enter</span>
+          <MoveDown size={18} className="animate-bounce text-yellow-400" />
         </div>
       </div>
-
-      <ControlPanel
-        lightsOn={lightsOn}
-        setLightsOn={setLightsOn}
-        beatActive={beatActive}
-        setBeatActive={setBeatActive}
-        trussHeight={trussHeight}
-        setTrussHeight={setTrussHeight}
-      />
     </section>
   );
 }
