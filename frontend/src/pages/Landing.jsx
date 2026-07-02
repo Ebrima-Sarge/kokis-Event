@@ -161,7 +161,7 @@ function Navbar() {
 const HERO_RAW =
   "https://customer-assets.emergentagent.com/job_theatre-tech-lab/artifacts/ai0dv9et_ChatGPT%20Image%20Jul%202%2C%202026%2C%2008_06_32%20AM.png";
 const HERO_BRAND =
-  "https://customer-assets.emergentagent.com/job_theatre-tech-lab/artifacts/uuir1cvq_EVENTS.png";
+  "https://static.prod-images.emergentagent.com/jobs/f052134b-53d1-4b48-a5e4-7ee5f4b62b98/images/dfe7f490113c78324f482f2ba82890313e8360896f39bf72b493c5bf78be6d37.png";
 
 /* ---------------- Hero / Stage (scroll-driven swipe reveal) ---------------- */
 function Hero() {
@@ -240,7 +240,7 @@ function Hero() {
             >
               We Build
               <br />
-              The <span className="text-stroke">Show</span>
+              The Show
               <br />
               You Remember.
             </motion.h1>
