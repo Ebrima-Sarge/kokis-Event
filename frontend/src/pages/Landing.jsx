@@ -13,9 +13,6 @@ import {
   X,
   MoveDown,
 } from "lucide-react";
-import StageScene from "@/components/StageScene";
-
-const ACCENT = "#facc15";
 
 const NAV = [
   { label: "Stage", href: "#stage" },
@@ -99,11 +96,11 @@ function Navbar() {
     >
       <div className="mx-auto max-w-[1400px] px-6 h-16 flex items-center justify-between">
         <a href="#stage" data-testid="nav-logo" className="flex items-center gap-2 group">
-          <span className="grid place-items-center w-8 h-8 bg-yellow-400 text-black font-display font-black text-lg">
-            A
+          <span className="grid place-items-center w-8 h-8 bg-white text-black font-display font-black text-lg">
+            K
           </span>
           <span className="font-display font-black tracking-tighter uppercase text-lg">
-            Apex<span className="text-yellow-400">/</span>Rig
+            KOKI<span className="text-white">.</span>s
           </span>
         </a>
 
@@ -113,7 +110,7 @@ function Navbar() {
               key={n.label}
               href={n.href}
               data-testid={`nav-${n.label.toLowerCase()}`}
-              className="text-xs uppercase tracking-[0.2em] text-zinc-400 hover:text-yellow-400 transition-colors"
+              className="text-xs uppercase tracking-[0.2em] text-zinc-400 hover:text-white transition-colors"
             >
               {n.label}
             </a>
@@ -121,7 +118,7 @@ function Navbar() {
           <a
             href="#quote"
             data-testid="nav-quote-btn"
-            className="bg-yellow-400 text-black text-xs font-bold uppercase tracking-[0.15em] px-5 py-2.5 hover:bg-yellow-500 transition-colors"
+            className="bg-white text-black text-xs font-bold uppercase tracking-[0.15em] px-5 py-2.5 hover:bg-zinc-200 transition-colors"
           >
             Request Quote
           </a>
@@ -151,7 +148,7 @@ function Navbar() {
           <a
             href="#quote"
             onClick={() => setOpen(false)}
-            className="bg-yellow-400 text-black text-center text-sm font-bold uppercase tracking-[0.15em] px-5 py-3"
+            className="bg-white text-black text-center text-sm font-bold uppercase tracking-[0.15em] px-5 py-3"
           >
             Request Quote
           </a>
@@ -161,12 +158,19 @@ function Navbar() {
   );
 }
 
-/* ---------------- Hero / Stage (scroll-driven cinematic camera) ---------------- */
+const HERO_RAW =
+  "https://customer-assets.emergentagent.com/job_theatre-tech-lab/artifacts/ai0dv9et_ChatGPT%20Image%20Jul%202%2C%202026%2C%2008_06_32%20AM.png";
+const HERO_BRAND =
+  "https://customer-assets.emergentagent.com/job_theatre-tech-lab/artifacts/uuir1cvq_EVENTS.png";
+
+/* ---------------- Hero / Stage (scroll-driven swipe reveal) ---------------- */
 function Hero() {
   const wrapRef = useRef(null);
+  const topRef = useRef(null);
+  const baseRef = useRef(null);
+  const dividerRef = useRef(null);
   const headlineRef = useRef(null);
   const hintRef = useRef(null);
-  const scrollRef = useRef(0);
 
   useEffect(() => {
     const onScroll = () => {
@@ -175,11 +179,16 @@ function Hero() {
       const rect = el.getBoundingClientRect();
       const total = el.offsetHeight - window.innerHeight;
       const p = total > 0 ? Math.min(1, Math.max(0, -rect.top / total)) : 0;
-      scrollRef.current = p;
+      const pct = p * 100;
+      if (topRef.current) topRef.current.style.clipPath = `inset(0 0 0 ${pct}%)`;
+      if (baseRef.current) baseRef.current.style.transform = `scale(${1 + p * 0.08})`;
+      if (dividerRef.current) {
+        dividerRef.current.style.left = `${pct}%`;
+        dividerRef.current.style.opacity = String(p > 0.01 && p < 0.99 ? 1 : 0);
+      }
       if (headlineRef.current)
-        headlineRef.current.style.opacity = String(Math.max(0, 1 - p * 2.2));
-      if (hintRef.current)
-        hintRef.current.style.opacity = String(Math.max(0, 1 - p * 4));
+        headlineRef.current.style.opacity = String(Math.max(0, 1 - p * 2.4));
+      if (hintRef.current) hintRef.current.style.opacity = String(Math.max(0, 1 - p * 4));
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
@@ -187,56 +196,73 @@ function Hero() {
   }, []);
 
   return (
-    <section id="stage" data-testid="hero-section" ref={wrapRef} className="relative h-[230vh] w-full">
+    <section id="stage" data-testid="hero-section" ref={wrapRef} className="relative h-[230vh] w-full bg-black">
       <div className="sticky top-0 h-[100svh] w-full overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <StageScene scrollRef={scrollRef} />
-        </div>
+        {/* base = branded KOKI'S frame (revealed by the swipe) */}
+        <div
+          ref={baseRef}
+          data-testid="hero-image-brand"
+          className="absolute inset-0 z-0 bg-cover bg-center grayscale"
+          style={{ backgroundImage: `url("${HERO_BRAND}")` }}
+        />
+        {/* top = raw stagehands frame, wiped away on scroll */}
+        <div
+          ref={topRef}
+          data-testid="hero-image-raw"
+          className="absolute inset-0 z-10 bg-cover bg-center grayscale"
+          style={{ backgroundImage: `url("${HERO_RAW}")`, clipPath: "inset(0 0 0 0%)" }}
+        />
+        {/* swipe divider */}
+        <div
+          ref={dividerRef}
+          className="pointer-events-none absolute top-0 z-20 h-full w-[2px] bg-white opacity-0"
+          style={{ left: "0%" }}
+        />
 
-        {/* gradient vignettes */}
-        <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-b from-[#070709]/70 via-transparent to-[#070709]" />
+        {/* contrast overlay */}
+        <div className="pointer-events-none absolute inset-0 z-30 bg-gradient-to-b from-black/70 via-black/20 to-black" />
 
-        {/* headline (fades out on scroll into the show) */}
+        {/* headline (fades out as the swipe reveals the brand) */}
         <div
           ref={headlineRef}
-          className="pointer-events-none absolute inset-0 z-10 flex flex-col justify-center"
+          className="pointer-events-none absolute inset-0 z-40 flex flex-col justify-center"
         >
           <div className="mx-auto max-w-[1400px] w-full px-6">
             <motion.p
               {...fadeUp(0.1)}
-              className="text-xs uppercase tracking-[0.3em] text-yellow-400 mb-4"
+              className="text-xs uppercase tracking-[0.3em] text-white mb-4"
             >
-              Live Event Rigging & Structures
+              Live Event Production & Rigging
             </motion.p>
             <motion.h1
               {...fadeUp(0.2)}
               className="font-display font-black uppercase tracking-tighter leading-[0.85] text-5xl md:text-7xl lg:text-8xl max-w-4xl"
             >
-              We Build The
+              We Build
               <br />
-              <span className="text-yellow-400">Sky</span> Above
+              The <span className="text-stroke">Show</span>
               <br />
-              The Show.
+              You Remember.
             </motion.h1>
             <motion.p
               {...fadeUp(0.35)}
-              className="mt-6 max-w-md text-sm md:text-base text-zinc-400 leading-relaxed"
+              className="mt-6 max-w-md text-sm md:text-base text-zinc-300 leading-relaxed"
             >
               Certified stagehands, riggers and structural crews for tours,
-              festivals and broadcast. Scroll to step onto the stage.
+              festivals and broadcast. Scroll to reveal the build.
             </motion.p>
             <motion.div {...fadeUp(0.5)} className="mt-8 flex flex-wrap gap-3 pointer-events-auto">
               <a
                 href="#quote"
                 data-testid="hero-quote-btn"
-                className="bg-yellow-400 text-black text-sm font-bold uppercase tracking-[0.15em] px-7 py-4 hover:bg-yellow-500 transition-colors"
+                className="bg-white text-black text-sm font-bold uppercase tracking-[0.15em] px-7 py-4 hover:bg-zinc-200 transition-colors"
               >
                 Request a Quote
               </a>
               <a
                 href="#work"
                 data-testid="hero-work-btn"
-                className="border-2 border-zinc-700 text-white text-sm font-bold uppercase tracking-[0.15em] px-7 py-4 hover:border-white transition-colors"
+                className="border-2 border-zinc-600 text-white text-sm font-bold uppercase tracking-[0.15em] px-7 py-4 hover:border-white transition-colors"
               >
                 See Our Work
               </a>
@@ -248,10 +274,10 @@ function Hero() {
         <div
           ref={hintRef}
           data-testid="scroll-hint"
-          className="pointer-events-none absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 text-zinc-500"
+          className="pointer-events-none absolute bottom-8 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center gap-2 text-zinc-400"
         >
-          <span className="text-[10px] uppercase tracking-[0.3em]">Scroll To Enter</span>
-          <MoveDown size={18} className="animate-bounce text-yellow-400" />
+          <span className="text-[10px] uppercase tracking-[0.3em]">Scroll To Reveal</span>
+          <MoveDown size={18} className="animate-bounce text-white" />
         </div>
       </div>
     </section>
@@ -287,7 +313,7 @@ function Services() {
   return (
     <section id="services" data-testid="services-section" className="bp-grid">
       <div className="mx-auto max-w-[1400px] px-6 py-24 md:py-32">
-        <motion.p {...fadeUp()} className="text-xs uppercase tracking-[0.3em] text-yellow-400">
+        <motion.p {...fadeUp()} className="text-xs uppercase tracking-[0.3em] text-white">
           // Capabilities
         </motion.p>
         <motion.h2
@@ -308,7 +334,7 @@ function Services() {
                 className={`group bg-[#0d0d0d] hover:bg-[#141414] transition-colors p-8 ${s.span}`}
               >
                 <div className="flex items-start justify-between">
-                  <Icon className="text-yellow-400" size={28} strokeWidth={1.5} />
+                  <Icon className="text-white" size={28} strokeWidth={1.5} />
                   <span className="font-mono text-xs text-zinc-700">0{i + 1}</span>
                 </div>
                 <h3 className="font-display font-bold uppercase tracking-tight text-xl md:text-2xl mt-6">
@@ -331,7 +357,7 @@ function Work() {
       <div className="mx-auto max-w-[1400px] px-6 py-24 md:py-32">
         <div className="flex items-end justify-between flex-wrap gap-4">
           <div>
-            <motion.p {...fadeUp()} className="text-xs uppercase tracking-[0.3em] text-yellow-400">
+            <motion.p {...fadeUp()} className="text-xs uppercase tracking-[0.3em] text-white">
               // Selected Work
             </motion.p>
             <motion.h2
@@ -363,7 +389,7 @@ function Work() {
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-6 flex items-end justify-between">
                 <div>
-                  <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-yellow-400">
+                  <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-white">
                     {g.meta}
                   </div>
                   <h3 className="font-display font-bold uppercase tracking-tight text-xl mt-1">
@@ -386,7 +412,7 @@ function About() {
     <section id="about" data-testid="about-section">
       <div className="mx-auto max-w-[1400px] px-6 py-24 md:py-32 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
         <div>
-          <motion.p {...fadeUp()} className="text-xs uppercase tracking-[0.3em] text-yellow-400">
+          <motion.p {...fadeUp()} className="text-xs uppercase tracking-[0.3em] text-white">
             // The Crew
           </motion.p>
           <motion.h2
@@ -397,7 +423,7 @@ function About() {
             <br />& Discipline.
           </motion.h2>
           <motion.p {...fadeUp(0.2)} className="mt-6 text-zinc-400 leading-relaxed max-w-lg">
-            Apex Stage Riggers is a crew of certified riggers, structural engineers
+            KOKI's Event is a crew of certified riggers, structural engineers
             and stagehands who treat the air above a show as a load-bearing
             workspace. Every point is calculated, signed and double-checked.
           </motion.p>
@@ -412,7 +438,7 @@ function About() {
               ["24/7", "On Call"],
             ].map(([a, b], i) => (
               <div key={i} className="bg-[#0d0d0d] px-6 py-4 flex-1">
-                <div className="font-display font-black text-xl text-yellow-400">{a}</div>
+                <div className="font-display font-black text-xl text-white">{a}</div>
                 <div className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 mt-1">{b}</div>
               </div>
             ))}
@@ -428,7 +454,7 @@ function About() {
               className="w-full h-[440px] object-cover grayscale hover:grayscale-0 transition-all duration-700"
             />
           </div>
-          <div className="absolute -bottom-5 -left-5 bg-yellow-400 text-black px-5 py-4 flex items-center gap-3">
+          <div className="absolute -bottom-5 -left-5 bg-white text-black px-5 py-4 flex items-center gap-3">
             <Cable size={22} />
             <span className="font-display font-black uppercase tracking-tight text-sm leading-tight">
               Safety
@@ -465,7 +491,7 @@ function Quote() {
     <section id="quote" data-testid="quote-section" className="bg-[#0c0c0d] border-t border-zinc-900">
       <div className="mx-auto max-w-[1400px] px-6 py-24 md:py-32 grid grid-cols-1 lg:grid-cols-12 gap-12">
         <div className="lg:col-span-5">
-          <motion.p {...fadeUp()} className="text-xs uppercase tracking-[0.3em] text-yellow-400">
+          <motion.p {...fadeUp()} className="text-xs uppercase tracking-[0.3em] text-white">
             // Request a Quote
           </motion.p>
           <motion.h2
@@ -495,7 +521,7 @@ function Quote() {
               value={form.name}
               onChange={onChange("name")}
               placeholder="Jane Doe"
-              className="mt-2 w-full bg-transparent border-b border-zinc-700 focus:border-yellow-400 outline-none py-2 text-white placeholder:text-zinc-700"
+              className="mt-2 w-full bg-transparent border-b border-zinc-700 focus:border-white outline-none py-2 text-white placeholder:text-zinc-700"
             />
           </div>
           <div className="bg-[#0a0a0a] p-6">
@@ -506,7 +532,7 @@ function Quote() {
               value={form.email}
               onChange={onChange("email")}
               placeholder="jane@venue.com"
-              className="mt-2 w-full bg-transparent border-b border-zinc-700 focus:border-yellow-400 outline-none py-2 text-white placeholder:text-zinc-700"
+              className="mt-2 w-full bg-transparent border-b border-zinc-700 focus:border-white outline-none py-2 text-white placeholder:text-zinc-700"
             />
           </div>
           <div className="bg-[#0a0a0a] p-6 md:col-span-2">
@@ -515,7 +541,7 @@ function Quote() {
               data-testid="quote-type-select"
               value={form.type}
               onChange={onChange("type")}
-              className="mt-2 w-full bg-[#0a0a0a] border-b border-zinc-700 focus:border-yellow-400 outline-none py-2 text-white"
+              className="mt-2 w-full bg-[#0a0a0a] border-b border-zinc-700 focus:border-white outline-none py-2 text-white"
             >
               {["Concert / Tour", "Festival", "Corporate / Conference", "Theatre", "Broadcast / Film", "Other"].map(
                 (o) => (
@@ -534,7 +560,7 @@ function Quote() {
               onChange={onChange("details")}
               rows={4}
               placeholder="Venue, dates, flown weight, deck size…"
-              className="mt-2 w-full bg-transparent border-b border-zinc-700 focus:border-yellow-400 outline-none py-2 text-white placeholder:text-zinc-700 resize-none"
+              className="mt-2 w-full bg-transparent border-b border-zinc-700 focus:border-white outline-none py-2 text-white placeholder:text-zinc-700 resize-none"
             />
           </div>
           <div className="bg-[#0a0a0a] p-6 md:col-span-2 flex items-center justify-between flex-wrap gap-4">
@@ -544,7 +570,7 @@ function Quote() {
             <button
               type="submit"
               data-testid="quote-submit-btn"
-              className="bg-yellow-400 text-black text-sm font-bold uppercase tracking-[0.15em] px-8 py-4 hover:bg-yellow-500 transition-colors"
+              className="bg-white text-black text-sm font-bold uppercase tracking-[0.15em] px-8 py-4 hover:bg-zinc-200 transition-colors"
             >
               Send Request
             </button>
@@ -561,19 +587,19 @@ function Footer() {
     <footer data-testid="footer" className="bg-[#0a0a0a]">
       <div className="mx-auto max-w-[1400px] px-6 py-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border-t border-zinc-900">
         <div className="flex items-center gap-2">
-          <span className="grid place-items-center w-8 h-8 bg-yellow-400 text-black font-display font-black text-lg">
-            A
+          <span className="grid place-items-center w-8 h-8 bg-white text-black font-display font-black text-lg">
+            K
           </span>
           <span className="font-display font-black tracking-tighter uppercase text-lg">
-            Apex<span className="text-yellow-400">/</span>Rig
+            KOKI<span className="text-white">.</span>s
           </span>
         </div>
         <p className="font-mono text-xs text-zinc-600">
-          © 2026 Apex Stage Riggers — Prototype experience. Built with three.js.
+          © 2026 KOKI's Event — Prototype experience.
         </p>
         <div className="flex gap-6 text-xs uppercase tracking-[0.2em] text-zinc-500">
-          <a href="#stage" className="hover:text-yellow-400 transition-colors">Top</a>
-          <a href="#quote" className="hover:text-yellow-400 transition-colors">Quote</a>
+          <a href="#stage" className="hover:text-white transition-colors">Top</a>
+          <a href="#quote" className="hover:text-white transition-colors">Quote</a>
         </div>
       </div>
     </footer>

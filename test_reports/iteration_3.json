@@ -1,0 +1,52 @@
+{
+  "summary": "Frontend-only regression of KOKI's Event landing page after (a) B&W theme conversion, (b) 3D→scroll-swipe hero reveal, (c) brand rename from Apex→KOKI. All 9 acceptance checks pass. No console errors, no WebGL canvas, no yellow anywhere, both hero PNGs load (HTTP 200), clip-path progressively swipes on scroll (0% → 92.3% → 100%), all sections render, quote form validates + succeeds, nav/hero buttons navigate correctly.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Hero.jsx: scroll listener attaches once and unbinds correctly — good. Consider adding rAF throttling if scroll on low-end mobile stutters.",
+    "Landing.jsx is ~625 lines with several sub-components (Nav, Hero, Stats, Services, Work, About, Quote, Footer). Splitting into /components/* would improve maintainability but is not blocking.",
+    "Quote form intentionally client-only (sonner toast) per spec — noted, not a bug.",
+    "Global CSS scroll-behavior: 'smooth' means click-driven hash nav is animated; test used behavior:'instant' for sampling as instructed."
+  ],
+  "verification_evidence": {
+    "title": "KOKI's Event — Live Event Production & Rigging",
+    "canvas_count": 0,
+    "contains_Apex": false,
+    "logo_text": "K / KOKI.S",
+    "footer_contains_KOKI": true,
+    "about_paragraph_starts_correctly": true,
+    "hero_image_raw_http": 200,
+    "hero_image_brand_http": 200,
+    "yellow_hits_count": 0,
+    "clipPath_scrollY_0": "inset(0px 0px 0px 0%)",
+    "clipPath_scrollY_1_2vh": "inset(0px 0px 0px 92.3077%)",
+    "clipPath_scrollY_2_0vh": "inset(0px 0px 0px 100%)",
+    "scroll_hint_text": "SCROLL TO REVEAL",
+    "services_cards_visible": [0,1,2,3,4],
+    "work_items_visible_and_img_loaded": [0,1,2,3],
+    "about_section_visible": true,
+    "quote_empty_submit_toast": "Name and email are required.",
+    "quote_filled_submit_toast": "Quote request received — we'll be in touch.",
+    "quote_status_updated": "'Request logged (prototype)' shown after submit",
+    "hero_work_btn_hash": "#work",
+    "hero_quote_btn_hash": "#quote",
+    "console_errors": 0
+  },
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (skipped per request)", "frontend": "100%"},
+  "test_credentials": "None required",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Landing is single-page, purely client-side. Hero uses scroll-driven inline clipPath on [data-testid=hero-image-raw] over base [data-testid=hero-image-brand]. Both PNGs served from customer-assets.emergentagent.com (HTTP 200). Quote form is client-only (sonner). Global CSS has scroll-behavior:smooth — use behavior:'instant' when sampling scroll-driven inline styles.",
+  "rca of the issue": "No issue observed."
+}
