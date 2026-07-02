@@ -1,6 +1,17 @@
 import { useState, useRef, useEffect } from "react";
-import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Toaster, toast } from "sonner";
+import IntroOverlay from "@/components/IntroOverlay";
+import KokisWordmark from "@/components/KokisWordmark";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { CONTACT_EMAIL, WORK_WITH_US_PATH } from "@/constants/site";
+import {
+  NavigationMenu,
+  NavigationMenuList,
+  NavigationMenuItem,
+  NavigationMenuLink,
+} from "@/components/ui/navigation-menu";
 import {
   Anchor,
   Construction,
@@ -12,6 +23,11 @@ import {
   Menu,
   X,
   MoveDown,
+  Facebook,
+  Instagram,
+  Linkedin,
+  ChevronUp,
+  Mail,
 } from "lucide-react";
 
 const NAV = [
@@ -19,6 +35,7 @@ const NAV = [
   { label: "Services", href: "#services" },
   { label: "Work", href: "#work" },
   { label: "About", href: "#about" },
+  { label: "Team", href: "#team" },
 ];
 
 const SERVICES = [
@@ -77,6 +94,37 @@ const GALLERY = [
   },
 ];
 
+const TEAM = [
+  {
+    id: "lead-rigger",
+    name: "Alex Mercer",
+    role: "Lead Rigger",
+    initials: "AM",
+    bio: "ETCP-certified rigger with 15+ years on arena tours and festival main stages.",
+  },
+  {
+    id: "stage-manager",
+    name: "Jordan Lee",
+    role: "Stage Manager",
+    initials: "JL",
+    bio: "Load-in to strike — coordinates crews, timelines, and safety across multi-day builds.",
+  },
+  {
+    id: "structural",
+    name: "Sam Okonkwo",
+    role: "Structural Engineer",
+    initials: "SO",
+    bio: "Steel plots, load calculations, and sign-off for flown grids and ground support.",
+  },
+  {
+    id: "lighting-tech",
+    name: "Riley Chen",
+    role: "Lighting Tech",
+    initials: "RC",
+    bio: "Truss hangs, distro, and cable management for broadcast and live events.",
+  },
+];
+
 function fadeUp(delay = 0) {
   return {
     initial: { opacity: 0, y: 28 },
@@ -87,42 +135,49 @@ function fadeUp(delay = 0) {
 }
 
 /* ---------------- Navbar ---------------- */
-function Navbar() {
+function Navbar({ logoTargetRef, visible }) {
   const [open, setOpen] = useState(false);
   return (
     <header
       data-testid="main-nav"
-      className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a0a]/90 backdrop-blur-sm border-b border-zinc-900"
+      className={`fixed top-0 left-0 right-0 z-50 ${visible ? "" : "invisible pointer-events-none"}`}
     >
       <div className="mx-auto max-w-[1400px] px-6 h-16 flex items-center justify-between">
-        <a href="#stage" data-testid="nav-logo" className="flex items-center gap-2 group">
-          <span className="grid place-items-center w-8 h-8 bg-white text-black font-display font-black text-lg">
-            K
-          </span>
-          <span className="font-display font-black tracking-tighter uppercase text-lg">
-            KOKI<span className="text-white">.</span>s
+        <a
+          href="#stage"
+          ref={logoTargetRef}
+          data-testid="nav-logo"
+          className="inline-flex items-center"
+        >
+          <span className={visible ? "" : "invisible"} aria-hidden={!visible}>
+            <KokisWordmark size="nav" />
           </span>
         </a>
 
-        <nav className="hidden md:flex items-center gap-8">
-          {NAV.map((n) => (
-            <a
-              key={n.label}
-              href={n.href}
-              data-testid={`nav-${n.label.toLowerCase()}`}
-              className="text-xs uppercase tracking-[0.2em] text-zinc-400 hover:text-white transition-colors"
-            >
-              {n.label}
-            </a>
-          ))}
-          <a
-            href="#quote"
-            data-testid="nav-quote-btn"
-            className="bg-white text-black text-xs font-bold uppercase tracking-[0.15em] px-5 py-2.5 hover:bg-zinc-200 transition-colors"
-          >
-            Request Quote
-          </a>
-        </nav>
+        <NavigationMenu className="hidden md:flex">
+          <NavigationMenuList className="gap-2">
+            {NAV.map((n) => (
+              <NavigationMenuItem key={n.label}>
+                <NavigationMenuLink
+                  href={n.href}
+                  data-testid={`nav-${n.label.toLowerCase()}`}
+                  className="glass-nav inline-flex items-center rounded-full px-5 py-2 text-[11px] uppercase tracking-[0.2em] text-zinc-200 hover:text-white"
+                >
+                  {n.label}
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+            ))}
+            <NavigationMenuItem>
+              <NavigationMenuLink
+                href="#quote"
+                data-testid="nav-quote-btn"
+                className="glass-nav inline-flex items-center rounded-full px-5 py-2 text-[11px] font-bold uppercase tracking-[0.2em] text-white bg-white/15 hover:bg-white/25"
+              >
+                Request Quote
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+          </NavigationMenuList>
+        </NavigationMenu>
 
         <button
           data-testid="nav-mobile-toggle"
@@ -134,13 +189,13 @@ function Navbar() {
       </div>
 
       {open && (
-        <div className="md:hidden border-t border-zinc-900 bg-[#0a0a0a] px-6 py-4 flex flex-col gap-4">
+        <div className="md:hidden glass-nav border-t border-white/10 px-6 py-4 flex flex-col gap-3">
           {NAV.map((n) => (
             <a
               key={n.label}
               href={n.href}
               onClick={() => setOpen(false)}
-              className="text-sm uppercase tracking-[0.2em] text-zinc-300"
+              className="glass-nav rounded-full px-4 py-3 text-center text-sm uppercase tracking-[0.2em] text-zinc-200 hover:text-white"
             >
               {n.label}
             </a>
@@ -148,7 +203,7 @@ function Navbar() {
           <a
             href="#quote"
             onClick={() => setOpen(false)}
-            className="bg-white text-black text-center text-sm font-bold uppercase tracking-[0.15em] px-5 py-3"
+            className="glass-nav rounded-full px-4 py-3 text-center text-sm font-bold uppercase tracking-[0.15em] text-white bg-white/15 hover:bg-white/25"
           >
             Request Quote
           </a>
@@ -468,6 +523,139 @@ function About() {
   );
 }
 
+/* ---------------- Team ---------------- */
+function TeamProfileCard({ member, index }) {
+  const reduce = useReducedMotion();
+  const [isFlipped, setIsFlipped] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const showBack = !reduce && (isHovered || isFlipped);
+
+  const handleClick = () => {
+    if (window.matchMedia("(hover: none)").matches) {
+      setIsFlipped((v) => !v);
+    }
+  };
+
+  if (reduce) {
+    return (
+      <motion.div
+        {...fadeUp(index * 0.08)}
+        data-testid={`team-card-${member.id}`}
+        className="bg-[#0d0d0d] p-8 flex flex-col items-center text-center min-h-[320px]"
+      >
+        <Avatar className="h-24 w-24 rounded-none">
+          <AvatarFallback className="rounded-none bg-[#1a1a1a] text-white font-display font-black text-2xl">
+            {member.initials}
+          </AvatarFallback>
+        </Avatar>
+        <h3 className="font-display font-bold uppercase tracking-tight text-xl mt-6">
+          {member.name}
+        </h3>
+        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-500 mt-2">
+          {member.role}
+        </p>
+        <p className="mt-4 text-sm text-zinc-400 leading-relaxed">{member.bio}</p>
+      </motion.div>
+    );
+  }
+
+  return (
+    <motion.div
+      {...fadeUp(index * 0.08)}
+      data-testid={`team-card-${member.id}`}
+      className="perspective-[1000px] min-h-[320px] aspect-[3/4] cursor-pointer md:cursor-default"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={handleClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          handleClick();
+        }
+      }}
+      role="button"
+      tabIndex={0}
+      aria-label={`${member.name}, ${member.role}. Tap to flip for bio.`}
+    >
+      <motion.div
+        className="relative w-full h-full min-h-[320px]"
+        style={{ transformStyle: "preserve-3d" }}
+        animate={{ rotateY: showBack ? 180 : 0 }}
+        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+      >
+        {/* front */}
+        <div
+          className="absolute inset-0 bg-[#0d0d0d] p-8 flex flex-col items-center justify-center text-center [backface-visibility:hidden]"
+          style={{ backfaceVisibility: "hidden" }}
+        >
+          <Avatar className="h-24 w-24 rounded-none">
+            <AvatarFallback className="rounded-none bg-[#1a1a1a] text-white font-display font-black text-2xl">
+              {member.initials}
+            </AvatarFallback>
+          </Avatar>
+          <h3 className="font-display font-bold uppercase tracking-tight text-xl mt-6">
+            {member.name}
+          </h3>
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-500 mt-2">
+            {member.role}
+          </p>
+        </div>
+
+        {/* back */}
+        <div
+          className="absolute inset-0 bg-[#141414] p-8 flex flex-col justify-center text-center [backface-visibility:hidden]"
+          style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
+        >
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-600">
+            // Placeholder
+          </p>
+          <p className="mt-4 text-sm text-zinc-300 leading-relaxed">{member.bio}</p>
+          <p className="mt-6 font-display font-bold uppercase tracking-tight text-lg text-white">
+            {member.name}
+          </p>
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-500 mt-1">
+            {member.role}
+          </p>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+function Team() {
+  return (
+    <section id="team" data-testid="team-section" className="bg-[#0c0c0d] border-y border-zinc-900">
+      <div className="mx-auto max-w-[1400px] px-6 py-24 md:py-32">
+        <motion.p {...fadeUp()} className="text-xs uppercase tracking-[0.3em] text-white">
+          // The Team
+        </motion.p>
+        <motion.h2
+          {...fadeUp(0.1)}
+          className="font-display font-black uppercase tracking-tighter text-4xl md:text-6xl mt-3"
+        >
+          Built By Specialists.
+        </motion.h2>
+
+        <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-zinc-900 border border-zinc-900">
+          {TEAM.map((member, i) => (
+            <TeamProfileCard key={member.id} member={member} index={i} />
+          ))}
+        </div>
+
+        <motion.div {...fadeUp(0.4)} className="mt-12">
+          <Link
+            to={WORK_WITH_US_PATH}
+            data-testid="team-work-with-us-btn"
+            className="inline-flex bg-white text-black text-sm font-bold uppercase tracking-[0.15em] px-7 py-4 hover:bg-zinc-200 transition-colors"
+          >
+            Work With Us
+          </Link>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
 /* ---------------- Quote form ---------------- */
 function Quote() {
   const [form, setForm] = useState({ name: "", email: "", type: "Concert / Tour", details: "" });
@@ -582,24 +770,82 @@ function Quote() {
 }
 
 /* ---------------- Footer ---------------- */
-function Footer() {
+function TikTokIcon({ size = 20, className = "" }) {
   return (
-    <footer data-testid="footer" className="bg-[#0a0a0a]">
-      <div className="mx-auto max-w-[1400px] px-6 py-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border-t border-zinc-900">
-        <div className="flex items-center gap-2">
-          <span className="grid place-items-center w-8 h-8 bg-white text-black font-display font-black text-lg">
-            K
-          </span>
-          <span className="font-display font-black tracking-tighter uppercase text-lg">
-            KOKI<span className="text-white">.</span>s
-          </span>
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+      className={className}
+    >
+      <path d="M16.5 5.06a5.4 5.4 0 0 1-1.28-.9 5.4 5.4 0 0 1-1.5-3.16h-3.2v13.2a2.72 2.72 0 1 1-2.4-2.7v-3.2a5.94 5.94 0 1 0 5.6 5.93V8.3a8.55 8.55 0 0 0 4.78 1.45V6.54a5.4 5.4 0 0 1-1.8-.48z" />
+    </svg>
+  );
+}
+
+const SOCIALS = [
+  { label: "Facebook", href: "#", Icon: Facebook },
+  { label: "Instagram", href: "#", Icon: Instagram },
+  { label: "TikTok", href: "#", Icon: TikTokIcon },
+  { label: "LinkedIn", href: "#", Icon: Linkedin },
+];
+
+function Footer() {
+  const scrollTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
+
+  return (
+    <footer data-testid="footer" className="bg-[#0c0c0d] border-t border-zinc-900 text-white">
+      <div className="mx-auto max-w-[1400px] px-6 py-6 grid grid-cols-1 md:grid-cols-3 items-center gap-6 text-center md:text-left">
+        {/* left: legal links */}
+        <div className="flex items-center justify-center md:justify-start gap-3 text-[11px] uppercase tracking-[0.18em] text-zinc-400">
+          <a href="#" className="hover:text-white transition-colors">
+            Terms of Use
+          </a>
+          <span className="text-zinc-700">|</span>
+          <a href="#" className="hover:text-white transition-colors">
+            Privacy Policy
+          </a>
         </div>
-        <p className="font-mono text-xs text-zinc-600">
-          © 2026 KOKI's Event — Prototype experience.
-        </p>
-        <div className="flex gap-6 text-xs uppercase tracking-[0.2em] text-zinc-500">
-          <a href="#stage" className="hover:text-white transition-colors">Top</a>
-          <a href="#quote" className="hover:text-white transition-colors">Quote</a>
+
+        {/* center: social icons + email */}
+        <div className="flex items-center justify-center gap-7">
+          {SOCIALS.map(({ label, href, Icon }) => (
+            <a
+              key={label}
+              href={href}
+              aria-label={label}
+              data-testid={`footer-social-${label.toLowerCase()}`}
+              className="text-zinc-400 hover:text-white transition-colors"
+            >
+              <Icon size={20} />
+            </a>
+          ))}
+          <a
+            href={`mailto:${CONTACT_EMAIL}`}
+            aria-label="Email us"
+            data-testid="footer-email"
+            className="text-zinc-400 hover:text-white transition-colors"
+          >
+            <Mail size={20} />
+          </a>
+        </div>
+
+        {/* right: copyright + scroll-to-top */}
+        <div className="flex items-center justify-center md:justify-end gap-5">
+          <p className="text-[11px] uppercase tracking-[0.18em] text-zinc-500">
+            Copyright &copy; KOKI&rsquo;S Event 2026
+          </p>
+          <button
+            type="button"
+            onClick={scrollTop}
+            data-testid="footer-scroll-top"
+            aria-label="Back to top"
+            className="grid place-items-center w-10 h-10 rounded-full border-2 border-zinc-600 text-zinc-400 hover:bg-white hover:text-black hover:border-white transition-colors shrink-0"
+          >
+            <ChevronUp size={20} />
+          </button>
         </div>
       </div>
     </footer>
@@ -607,16 +853,36 @@ function Footer() {
 }
 
 export default function Landing() {
+  const logoTargetRef = useRef(null);
+  const [introDone, setIntroDone] = useState(false);
+
+  useEffect(() => {
+    document.body.style.overflow = introDone ? "" : "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [introDone]);
+
   return (
     <div className="bg-[#0a0a0a] text-white min-h-screen">
+      <AnimatePresence>
+        {!introDone && (
+          <IntroOverlay
+            key="intro"
+            logoTargetRef={logoTargetRef}
+            onDone={() => setIntroDone(true)}
+          />
+        )}
+      </AnimatePresence>
       <Toaster theme="dark" position="top-right" />
-      <Navbar />
+      <Navbar logoTargetRef={logoTargetRef} visible={introDone} />
       <main>
         <Hero />
         <Stats />
         <Services />
         <Work />
         <About />
+        <Team />
         <Quote />
       </main>
       <Footer />
