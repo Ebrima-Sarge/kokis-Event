@@ -18,6 +18,7 @@
  * @typedef {Object} BrandAssets
  * @property {string} heroRaw
  * @property {string} heroBrand
+ * @property {string} [logo]
  * @property {string} [favicon]
  */
 
