@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Toaster, toast } from "sonner";
 import IntroOverlay from "@/components/IntroOverlay";
@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useBrand } from "@/hooks/useBrand";
 import { useBrandLink } from "@/hooks/useBrandLink";
 import { WORK_WITH_US_PATH } from "@/constants/site";
+import { SHOWSECURITY_NAV } from "@/constants/showsecurity-routes";
 import {
   NavigationMenu,
   NavigationMenuList,
@@ -139,45 +140,88 @@ function fadeUp(delay = 0) {
 /* ---------------- Navbar ---------------- */
 function Navbar({ logoTargetRef, visible }) {
   const [open, setOpen] = useState(false);
+  const { brandId } = useBrand();
+  const [searchParams] = useSearchParams();
+  const brandParam = searchParams.get("brand");
+  const homeLink = brandParam ? `/?brand=${brandParam}` : "/";
+  const isShowSecurity = brandId === "showsecurity";
+  const brandLink = (path) => (brandParam ? `${path}?brand=${brandParam}` : path);
+
+  const showSecurityLinks = SHOWSECURITY_NAV.map((item) => ({
+    label: item.label,
+    to: brandLink(item.path),
+  }));
+
+  const logoContent = (
+    <span className={visible ? "" : "invisible"} aria-hidden={!visible}>
+      <KokisWordmark size="nav" />
+    </span>
+  );
+
   return (
     <header
       data-testid="main-nav"
       className={`fixed top-0 left-0 right-0 z-50 ${visible ? "" : "invisible pointer-events-none"}`}
     >
       <div className="mx-auto max-w-[1400px] px-6 h-16 flex items-center justify-between">
-        <a
-          href="#stage"
-          ref={logoTargetRef}
-          data-testid="nav-logo"
-          className="inline-flex items-center"
-        >
-          <span className={visible ? "" : "invisible"} aria-hidden={!visible}>
-            <KokisWordmark size="nav" />
-          </span>
-        </a>
+        {isShowSecurity ? (
+          <Link
+            to={homeLink}
+            ref={logoTargetRef}
+            data-testid="nav-logo"
+            className="inline-flex items-center"
+          >
+            {logoContent}
+          </Link>
+        ) : (
+          <a
+            href="#stage"
+            ref={logoTargetRef}
+            data-testid="nav-logo"
+            className="inline-flex items-center"
+          >
+            {logoContent}
+          </a>
+        )}
 
         <NavigationMenu className="hidden md:flex">
           <NavigationMenuList className="gap-2">
-            {NAV.map((n) => (
-              <NavigationMenuItem key={n.label}>
+            {isShowSecurity
+              ? showSecurityLinks.map((n) => (
+                  <NavigationMenuItem key={n.label}>
+                    <NavigationMenuLink asChild>
+                      <Link
+                        to={n.to}
+                        data-testid={`nav-${n.label.toLowerCase().replace(/\s+/g, "-")}`}
+                        className="glass-nav inline-flex items-center rounded-full px-5 py-2 text-[11px] uppercase tracking-[0.2em] text-brand-muted hover:text-brand-text"
+                      >
+                        {n.label}
+                      </Link>
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
+                ))
+              : NAV.map((n) => (
+                  <NavigationMenuItem key={n.label}>
+                    <NavigationMenuLink
+                      href={n.href}
+                      data-testid={`nav-${n.label.toLowerCase()}`}
+                      className="glass-nav inline-flex items-center rounded-full px-5 py-2 text-[11px] uppercase tracking-[0.2em] text-brand-muted hover:text-brand-text"
+                    >
+                      {n.label}
+                    </NavigationMenuLink>
+                  </NavigationMenuItem>
+                ))}
+            {!isShowSecurity && (
+              <NavigationMenuItem>
                 <NavigationMenuLink
-                  href={n.href}
-                  data-testid={`nav-${n.label.toLowerCase()}`}
-                  className="glass-nav inline-flex items-center rounded-full px-5 py-2 text-[11px] uppercase tracking-[0.2em] text-brand-muted hover:text-brand-text"
+                  href="#quote"
+                  data-testid="nav-quote-btn"
+                  className="glass-nav inline-flex items-center rounded-full px-5 py-2 text-[11px] font-bold uppercase tracking-[0.2em] text-brand-text bg-brand-accent/15 hover:bg-brand-accent/25"
                 >
-                  {n.label}
+                  Request Quote
                 </NavigationMenuLink>
               </NavigationMenuItem>
-            ))}
-            <NavigationMenuItem>
-              <NavigationMenuLink
-                href="#quote"
-                data-testid="nav-quote-btn"
-                className="glass-nav inline-flex items-center rounded-full px-5 py-2 text-[11px] font-bold uppercase tracking-[0.2em] text-brand-text bg-brand-accent/15 hover:bg-brand-accent/25"
-              >
-                Request Quote
-              </NavigationMenuLink>
-            </NavigationMenuItem>
+            )}
           </NavigationMenuList>
         </NavigationMenu>
 
@@ -192,23 +236,36 @@ function Navbar({ logoTargetRef, visible }) {
 
       {open && (
         <div className="md:hidden glass-nav border-t border-brand-text/10 px-6 py-4 flex flex-col gap-3">
-          {NAV.map((n) => (
+          {isShowSecurity
+            ? showSecurityLinks.map((n) => (
+                <Link
+                  key={n.label}
+                  to={n.to}
+                  onClick={() => setOpen(false)}
+                  className="glass-nav rounded-full px-4 py-3 text-center text-sm uppercase tracking-[0.2em] text-brand-muted hover:text-brand-text"
+                >
+                  {n.label}
+                </Link>
+              ))
+            : NAV.map((n) => (
+                <a
+                  key={n.label}
+                  href={n.href}
+                  onClick={() => setOpen(false)}
+                  className="glass-nav rounded-full px-4 py-3 text-center text-sm uppercase tracking-[0.2em] text-brand-muted hover:text-brand-text"
+                >
+                  {n.label}
+                </a>
+              ))}
+          {!isShowSecurity && (
             <a
-              key={n.label}
-              href={n.href}
+              href="#quote"
               onClick={() => setOpen(false)}
-              className="glass-nav rounded-full px-4 py-3 text-center text-sm uppercase tracking-[0.2em] text-brand-muted hover:text-brand-text"
+              className="glass-nav rounded-full px-4 py-3 text-center text-sm font-bold uppercase tracking-[0.15em] text-brand-text bg-brand-accent/15 hover:bg-brand-accent/25"
             >
-              {n.label}
+              Request Quote
             </a>
-          ))}
-          <a
-            href="#quote"
-            onClick={() => setOpen(false)}
-            className="glass-nav rounded-full px-4 py-3 text-center text-sm font-bold uppercase tracking-[0.15em] text-brand-text bg-brand-accent/15 hover:bg-brand-accent/25"
-          >
-            Request Quote
-          </a>
+          )}
         </div>
       )}
     </header>

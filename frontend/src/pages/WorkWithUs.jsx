@@ -1,12 +1,32 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { Toaster } from "sonner";
 import { ArrowLeft } from "lucide-react";
 import { useBrand } from "@/hooks/useBrand";
 import { useBrandLink } from "@/hooks/useBrandLink";
+import ShowSecurityGate from "@/components/showsecurity/ShowSecurityGate";
+import DemoPageShell from "@/components/showsecurity/DemoPageShell";
+import ApplicationWizard from "@/components/showsecurity/ApplicationWizard";
 
 export default function WorkWithUs() {
-  const { brand } = useBrand();
+  const { brand, brandId } = useBrand();
   const homeLink = useBrandLink("/");
+
+  if (brandId === "showsecurity") {
+    return (
+      <ShowSecurityGate>
+        <DemoPageShell
+          overline="// Careers"
+          title="Work With Us"
+          description={`Apply to join ${brand.legalName} — choose open shifts or register for future job offers.`}
+          showBack
+        >
+          <ApplicationWizard />
+        </DemoPageShell>
+        <Toaster theme="dark" position="top-right" />
+      </ShowSecurityGate>
+    );
+  }
 
   return (
     <div className="bg-brand-bg text-brand-text min-h-screen">
