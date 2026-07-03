@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import KokisWordmark, { WORDMARK_EASE } from "@/components/KokisWordmark";
+import BrandWordmark, { WORDMARK_EASE } from "@/components/BrandWordmark";
+import { useBrand } from "@/hooks/useBrand";
 
-const TAGLINE = "Staging & Event Production";
 const TRAVEL_DURATION = 0.7;
 
 export default function IntroOverlay({ onDone, logoTargetRef }) {
+  const { brand } = useBrand();
   const reduce = useReducedMotion();
   const wordmarkRef = useRef(null);
   const [phase, setPhase] = useState("build");
@@ -49,7 +50,7 @@ export default function IntroOverlay({ onDone, logoTargetRef }) {
       className="fixed inset-0 z-[100] overflow-hidden pointer-events-none"
     >
       <motion.div
-        className="absolute inset-0 bg-black"
+        className="absolute inset-0 bg-brand-bg"
         initial={{ opacity: 1 }}
         animate={{ opacity: phase === "travel" ? 0 : 1 }}
         transition={{ duration: TRAVEL_DURATION, ease: WORDMARK_EASE }}
@@ -59,9 +60,9 @@ export default function IntroOverlay({ onDone, logoTargetRef }) {
         <div className="absolute inset-0 flex flex-col items-center justify-center">
           <div ref={wordmarkRef}>
             {reduce ? (
-              <KokisWordmark size="hero" />
+              <BrandWordmark size="hero" />
             ) : (
-              <KokisWordmark size="hero" animateLetters />
+              <BrandWordmark size="hero" animateLetters />
             )}
           </div>
 
@@ -69,7 +70,7 @@ export default function IntroOverlay({ onDone, logoTargetRef }) {
             <>
               <motion.div
                 aria-hidden="true"
-                className="mt-6 h-px bg-white/70 origin-center"
+                className="mt-6 h-px bg-brand-accent/70 origin-center"
                 initial={{ scaleX: 0, opacity: 0 }}
                 animate={{
                   scaleX: 1,
@@ -80,7 +81,7 @@ export default function IntroOverlay({ onDone, logoTargetRef }) {
               />
 
               <motion.p
-                className="mt-5 text-center text-[11px] md:text-sm uppercase tracking-[0.35em] text-zinc-400"
+                className="mt-5 text-center text-[11px] md:text-sm uppercase tracking-[0.35em] text-brand-muted"
                 initial={{ opacity: 0, y: 12 }}
                 animate={{
                   opacity: 1,
@@ -88,7 +89,7 @@ export default function IntroOverlay({ onDone, logoTargetRef }) {
                   transition: { duration: 0.6, delay: 1.2, ease: WORDMARK_EASE },
                 }}
               >
-                {TAGLINE}
+                {brand.tagline}
               </motion.p>
             </>
           )}
@@ -113,7 +114,7 @@ export default function IntroOverlay({ onDone, logoTargetRef }) {
           transition={{ duration: TRAVEL_DURATION, ease: WORDMARK_EASE }}
           onAnimationComplete={handleTravelComplete}
         >
-          <KokisWordmark size="hero" />
+          <BrandWordmark size="hero" />
         </motion.div>
       )}
     </div>

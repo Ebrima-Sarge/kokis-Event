@@ -6,11 +6,25 @@
 @tailwind utilities;
 
 :root {
-  --bg: #0a0a0a;
-  --surface: #121212;
-  --surface-2: #1a1a1a;
-  --border: #27272a;
-  --accent: #ffffff;
+  --brand-bg: #0a0a0a;
+  --brand-surface: #0c0c0d;
+  --brand-surface-alt: #0d0d0d;
+  --brand-surface-hover: #141414;
+  --brand-elevated: #1a1a1a;
+  --brand-border: #27272a;
+  --brand-text: #ffffff;
+  --brand-text-muted: #a1a1aa;
+  --brand-text-subtle: #71717a;
+  --brand-accent: #ffffff;
+  --brand-accent-fg: #0a0a0a;
+  --brand-accent-hover: #e4e4e7;
+
+  /* legacy aliases */
+  --bg: var(--brand-bg);
+  --surface: var(--brand-surface);
+  --surface-2: var(--brand-elevated);
+  --border: var(--brand-border);
+  --accent: var(--brand-accent);
 }
 
 * {
@@ -23,8 +37,8 @@ html {
 
 body {
   margin: 0;
-  background: var(--bg);
-  color: #ffffff;
+  background: var(--brand-bg);
+  color: var(--brand-text);
   font-family: "IBM Plex Mono", ui-monospace, monospace;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -44,8 +58,8 @@ code {
 
 /* Selection */
 ::selection {
-  background: var(--accent);
-  color: #0a0a0a;
+  background: var(--brand-accent);
+  color: var(--brand-accent-fg);
 }
 
 /* Scrollbar */
@@ -53,39 +67,39 @@ code {
   width: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #0a0a0a;
+  background: var(--brand-bg);
 }
 ::-webkit-scrollbar-thumb {
-  background: #27272a;
+  background: var(--brand-border);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--accent);
+  background: var(--brand-accent);
 }
 
 /* Blueprint grid background utility */
 .bp-grid {
   background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    linear-gradient(to right, color-mix(in srgb, var(--brand-text) 4%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--brand-text) 4%, transparent) 1px, transparent 1px);
   background-size: 44px 44px;
 }
 
 .text-stroke {
-  -webkit-text-stroke: 1px #3f3f46;
+  -webkit-text-stroke: 1px var(--brand-text-subtle);
   color: transparent;
 }
 
 /* Frosted glass nav pill */
 .glass-nav {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: color-mix(in srgb, var(--brand-text) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--brand-text) 12%, transparent);
   backdrop-filter: blur(12px) saturate(140%);
   -webkit-backdrop-filter: blur(12px) saturate(140%);
   transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease;
 }
 .glass-nav:hover {
-  background: rgba(255, 255, 255, 0.14);
-  border-color: rgba(255, 255, 255, 0.28);
+  background: color-mix(in srgb, var(--brand-text) 14%, transparent);
+  border-color: color-mix(in srgb, var(--brand-text) 28%, transparent);
 }
 
 @layer base {

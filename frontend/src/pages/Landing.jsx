@@ -5,7 +5,9 @@ import { Toaster, toast } from "sonner";
 import IntroOverlay from "@/components/IntroOverlay";
 import KokisWordmark from "@/components/KokisWordmark";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { CONTACT_EMAIL, WORK_WITH_US_PATH } from "@/constants/site";
+import { useBrand } from "@/hooks/useBrand";
+import { useBrandLink } from "@/hooks/useBrandLink";
+import { WORK_WITH_US_PATH } from "@/constants/site";
 import {
   NavigationMenu,
   NavigationMenuList,
@@ -161,7 +163,7 @@ function Navbar({ logoTargetRef, visible }) {
                 <NavigationMenuLink
                   href={n.href}
                   data-testid={`nav-${n.label.toLowerCase()}`}
-                  className="glass-nav inline-flex items-center rounded-full px-5 py-2 text-[11px] uppercase tracking-[0.2em] text-zinc-200 hover:text-white"
+                  className="glass-nav inline-flex items-center rounded-full px-5 py-2 text-[11px] uppercase tracking-[0.2em] text-brand-muted hover:text-brand-text"
                 >
                   {n.label}
                 </NavigationMenuLink>
@@ -171,7 +173,7 @@ function Navbar({ logoTargetRef, visible }) {
               <NavigationMenuLink
                 href="#quote"
                 data-testid="nav-quote-btn"
-                className="glass-nav inline-flex items-center rounded-full px-5 py-2 text-[11px] font-bold uppercase tracking-[0.2em] text-white bg-white/15 hover:bg-white/25"
+                className="glass-nav inline-flex items-center rounded-full px-5 py-2 text-[11px] font-bold uppercase tracking-[0.2em] text-brand-text bg-brand-accent/15 hover:bg-brand-accent/25"
               >
                 Request Quote
               </NavigationMenuLink>
@@ -181,7 +183,7 @@ function Navbar({ logoTargetRef, visible }) {
 
         <button
           data-testid="nav-mobile-toggle"
-          className="md:hidden text-white"
+          className="md:hidden text-brand-text"
           onClick={() => setOpen((v) => !v)}
         >
           {open ? <X size={22} /> : <Menu size={22} />}
@@ -189,13 +191,13 @@ function Navbar({ logoTargetRef, visible }) {
       </div>
 
       {open && (
-        <div className="md:hidden glass-nav border-t border-white/10 px-6 py-4 flex flex-col gap-3">
+        <div className="md:hidden glass-nav border-t border-brand-text/10 px-6 py-4 flex flex-col gap-3">
           {NAV.map((n) => (
             <a
               key={n.label}
               href={n.href}
               onClick={() => setOpen(false)}
-              className="glass-nav rounded-full px-4 py-3 text-center text-sm uppercase tracking-[0.2em] text-zinc-200 hover:text-white"
+              className="glass-nav rounded-full px-4 py-3 text-center text-sm uppercase tracking-[0.2em] text-brand-muted hover:text-brand-text"
             >
               {n.label}
             </a>
@@ -203,7 +205,7 @@ function Navbar({ logoTargetRef, visible }) {
           <a
             href="#quote"
             onClick={() => setOpen(false)}
-            className="glass-nav rounded-full px-4 py-3 text-center text-sm font-bold uppercase tracking-[0.15em] text-white bg-white/15 hover:bg-white/25"
+            className="glass-nav rounded-full px-4 py-3 text-center text-sm font-bold uppercase tracking-[0.15em] text-brand-text bg-brand-accent/15 hover:bg-brand-accent/25"
           >
             Request Quote
           </a>
@@ -213,13 +215,9 @@ function Navbar({ logoTargetRef, visible }) {
   );
 }
 
-const HERO_RAW =
-  "https://customer-assets.emergentagent.com/job_theatre-tech-lab/artifacts/ai0dv9et_ChatGPT%20Image%20Jul%202%2C%202026%2C%2008_06_32%20AM.png";
-const HERO_BRAND =
-  "https://static.prod-images.emergentagent.com/jobs/f052134b-53d1-4b48-a5e4-7ee5f4b62b98/images/dfe7f490113c78324f482f2ba82890313e8360896f39bf72b493c5bf78be6d37.png";
-
 /* ---------------- Hero / Stage (scroll-driven swipe reveal) ---------------- */
 function Hero() {
+  const { brand } = useBrand();
   const wrapRef = useRef(null);
   const topRef = useRef(null);
   const baseRef = useRef(null);
@@ -251,26 +249,26 @@ function Hero() {
   }, []);
 
   return (
-    <section id="stage" data-testid="hero-section" ref={wrapRef} className="relative h-[230vh] w-full bg-black">
+    <section id="stage" data-testid="hero-section" ref={wrapRef} className="relative h-[230vh] w-full bg-brand-bg">
       <div className="sticky top-0 h-[100svh] w-full overflow-hidden">
         {/* base = branded KOKI'S frame (revealed by the swipe) */}
         <div
           ref={baseRef}
           data-testid="hero-image-brand"
           className="absolute inset-0 z-0 bg-cover bg-center grayscale"
-          style={{ backgroundImage: `url("${HERO_BRAND}")` }}
+          style={{ backgroundImage: `url("${brand.assets.heroBrand}")` }}
         />
         {/* top = raw stagehands frame, wiped away on scroll */}
         <div
           ref={topRef}
           data-testid="hero-image-raw"
           className="absolute inset-0 z-10 bg-cover bg-center grayscale"
-          style={{ backgroundImage: `url("${HERO_RAW}")`, clipPath: "inset(0 0 0 0%)" }}
+          style={{ backgroundImage: `url("${brand.assets.heroRaw}")`, clipPath: "inset(0 0 0 0%)" }}
         />
         {/* swipe divider */}
         <div
           ref={dividerRef}
-          className="pointer-events-none absolute top-0 z-20 h-full w-[2px] bg-white opacity-0"
+          className="pointer-events-none absolute top-0 z-20 h-full w-[2px] bg-brand-accent opacity-0"
           style={{ left: "0%" }}
         />
 
@@ -285,7 +283,7 @@ function Hero() {
           <div className="mx-auto max-w-[1400px] w-full px-6">
             <motion.p
               {...fadeUp(0.1)}
-              className="text-xs uppercase tracking-[0.3em] text-white mb-4"
+              className="text-xs uppercase tracking-[0.3em] text-brand-text mb-4"
             >
               Live Event Production & Rigging
             </motion.p>
@@ -301,7 +299,7 @@ function Hero() {
             </motion.h1>
             <motion.p
               {...fadeUp(0.35)}
-              className="mt-6 max-w-md text-sm md:text-base text-zinc-300 leading-relaxed"
+              className="mt-6 max-w-md text-sm md:text-base text-brand-muted leading-relaxed"
             >
               Certified stagehands, riggers and structural crews for tours,
               festivals and broadcast. Scroll to reveal the build.
@@ -310,14 +308,14 @@ function Hero() {
               <a
                 href="#quote"
                 data-testid="hero-quote-btn"
-                className="bg-white text-black text-sm font-bold uppercase tracking-[0.15em] px-7 py-4 hover:bg-zinc-200 transition-colors"
+                className="bg-brand-accent text-brand-accent-fg text-sm font-bold uppercase tracking-[0.15em] px-7 py-4 hover:bg-brand-accent-hover transition-colors"
               >
                 Request a Quote
               </a>
               <a
                 href="#work"
                 data-testid="hero-work-btn"
-                className="border-2 border-zinc-600 text-white text-sm font-bold uppercase tracking-[0.15em] px-7 py-4 hover:border-white transition-colors"
+                className="border-2 border-brand-border text-brand-text text-sm font-bold uppercase tracking-[0.15em] px-7 py-4 hover:border-brand-accent transition-colors"
               >
                 See Our Work
               </a>
@@ -329,10 +327,10 @@ function Hero() {
         <div
           ref={hintRef}
           data-testid="scroll-hint"
-          className="pointer-events-none absolute bottom-8 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center gap-2 text-zinc-400"
+          className="pointer-events-none absolute bottom-8 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center gap-2 text-brand-muted"
         >
           <span className="text-[10px] uppercase tracking-[0.3em]">Scroll To Reveal</span>
-          <MoveDown size={18} className="animate-bounce text-white" />
+          <MoveDown size={18} className="animate-bounce text-brand-text" />
         </div>
       </div>
     </section>
@@ -348,14 +346,14 @@ function Stats() {
     ["48T", "Max Flown Load"],
   ];
   return (
-    <section className="border-y border-zinc-900 bg-[#0c0c0d]">
-      <div className="mx-auto max-w-[1400px] grid grid-cols-2 md:grid-cols-4 divide-x divide-zinc-900">
+    <section className="border-y border-brand-border bg-brand-surface">
+      <div className="mx-auto max-w-[1400px] grid grid-cols-2 md:grid-cols-4 divide-x divide-brand-border">
         {items.map(([n, l], i) => (
           <motion.div key={i} {...fadeUp(i * 0.08)} className="px-6 py-8">
-            <div className="font-display font-black text-3xl md:text-5xl tracking-tighter text-white">
+            <div className="font-display font-black text-3xl md:text-5xl tracking-tighter text-brand-text">
               {n}
             </div>
-            <div className="mt-1 text-[11px] uppercase tracking-[0.2em] text-zinc-500">{l}</div>
+            <div className="mt-1 text-[11px] uppercase tracking-[0.2em] text-brand-subtle">{l}</div>
           </motion.div>
         ))}
       </div>
@@ -368,7 +366,7 @@ function Services() {
   return (
     <section id="services" data-testid="services-section" className="bp-grid">
       <div className="mx-auto max-w-[1400px] px-6 py-24 md:py-32">
-        <motion.p {...fadeUp()} className="text-xs uppercase tracking-[0.3em] text-white">
+        <motion.p {...fadeUp()} className="text-xs uppercase tracking-[0.3em] text-brand-text">
           // Capabilities
         </motion.p>
         <motion.h2
@@ -378,7 +376,7 @@ function Services() {
           Everything Overhead, Engineered.
         </motion.h2>
 
-        <div className="mt-14 grid grid-cols-1 lg:grid-cols-12 gap-px bg-zinc-900 border border-zinc-900">
+        <div className="mt-14 grid grid-cols-1 lg:grid-cols-12 gap-px bg-brand-border border border-brand-border">
           {SERVICES.map((s, i) => {
             const Icon = s.icon;
             return (
@@ -386,16 +384,16 @@ function Services() {
                 key={i}
                 {...fadeUp(i * 0.06)}
                 data-testid={`service-card-${i}`}
-                className={`group bg-[#0d0d0d] hover:bg-[#141414] transition-colors p-8 ${s.span}`}
+                className={`group bg-brand-surface-alt hover:bg-brand-surface-hover transition-colors p-8 ${s.span}`}
               >
                 <div className="flex items-start justify-between">
-                  <Icon className="text-white" size={28} strokeWidth={1.5} />
-                  <span className="font-mono text-xs text-zinc-700">0{i + 1}</span>
+                  <Icon className="text-brand-text" size={28} strokeWidth={1.5} />
+                  <span className="font-mono text-xs text-brand-subtle">0{i + 1}</span>
                 </div>
                 <h3 className="font-display font-bold uppercase tracking-tight text-xl md:text-2xl mt-6">
                   {s.title}
                 </h3>
-                <p className="mt-3 text-sm text-zinc-500 leading-relaxed max-w-md">{s.desc}</p>
+                <p className="mt-3 text-sm text-brand-subtle leading-relaxed max-w-md">{s.desc}</p>
               </motion.div>
             );
           })}
@@ -408,11 +406,11 @@ function Services() {
 /* ---------------- Work / Gallery ---------------- */
 function Work() {
   return (
-    <section id="work" data-testid="work-section" className="bg-[#0c0c0d] border-y border-zinc-900">
+    <section id="work" data-testid="work-section" className="bg-brand-surface border-y border-brand-border">
       <div className="mx-auto max-w-[1400px] px-6 py-24 md:py-32">
         <div className="flex items-end justify-between flex-wrap gap-4">
           <div>
-            <motion.p {...fadeUp()} className="text-xs uppercase tracking-[0.3em] text-white">
+            <motion.p {...fadeUp()} className="text-xs uppercase tracking-[0.3em] text-brand-text">
               // Selected Work
             </motion.p>
             <motion.h2
@@ -422,18 +420,18 @@ function Work() {
               On The Truss.
             </motion.h2>
           </div>
-          <motion.span {...fadeUp(0.2)} className="font-mono text-xs text-zinc-600">
+          <motion.span {...fadeUp(0.2)} className="font-mono text-xs text-brand-subtle">
             2019 — 2026
           </motion.span>
         </div>
 
-        <div className="mt-14 grid grid-cols-1 md:grid-cols-2 gap-px bg-zinc-900 border border-zinc-900">
+        <div className="mt-14 grid grid-cols-1 md:grid-cols-2 gap-px bg-brand-border border border-brand-border">
           {GALLERY.map((g, i) => (
             <motion.div
               key={i}
               {...fadeUp(i * 0.08)}
               data-testid={`work-item-${i}`}
-              className="group relative overflow-hidden bg-black aspect-[16/10]"
+              className="group relative overflow-hidden bg-brand-bg aspect-[16/10]"
             >
               <img
                 src={g.url}
@@ -444,14 +442,14 @@ function Work() {
               <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-6 flex items-end justify-between">
                 <div>
-                  <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-white">
+                  <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-brand-text">
                     {g.meta}
                   </div>
                   <h3 className="font-display font-bold uppercase tracking-tight text-xl mt-1">
                     {g.title}
                   </h3>
                 </div>
-                <ArrowUpRight className="text-white opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
+                <ArrowUpRight className="text-brand-text opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
               </div>
             </motion.div>
           ))}
@@ -463,11 +461,13 @@ function Work() {
 
 /* ---------------- About ---------------- */
 function About() {
+  const { brand } = useBrand();
+
   return (
     <section id="about" data-testid="about-section">
       <div className="mx-auto max-w-[1400px] px-6 py-24 md:py-32 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
         <div>
-          <motion.p {...fadeUp()} className="text-xs uppercase tracking-[0.3em] text-white">
+          <motion.p {...fadeUp()} className="text-xs uppercase tracking-[0.3em] text-brand-text">
             // The Crew
           </motion.p>
           <motion.h2
@@ -477,31 +477,31 @@ function About() {
             Steel, Rope
             <br />& Discipline.
           </motion.h2>
-          <motion.p {...fadeUp(0.2)} className="mt-6 text-zinc-400 leading-relaxed max-w-lg">
-            KOKI's Event is a crew of certified riggers, structural engineers
+          <motion.p {...fadeUp(0.2)} className="mt-6 text-brand-muted leading-relaxed max-w-lg">
+            {brand.legalName} is a crew of certified riggers, structural engineers
             and stagehands who treat the air above a show as a load-bearing
             workspace. Every point is calculated, signed and double-checked.
           </motion.p>
-          <motion.p {...fadeUp(0.3)} className="mt-4 text-zinc-400 leading-relaxed max-w-lg">
+          <motion.p {...fadeUp(0.3)} className="mt-4 text-brand-muted leading-relaxed max-w-lg">
             From a 200-cap club to a stadium headline, we deliver rigging plots,
             ground-support and flown systems that pass inspection the first time.
           </motion.p>
-          <motion.div {...fadeUp(0.4)} className="mt-8 flex gap-px bg-zinc-900 border border-zinc-900">
+          <motion.div {...fadeUp(0.4)} className="mt-8 flex gap-px bg-brand-border border border-brand-border">
             {[
               ["ETCP", "Certified"],
               ["LOLER", "Compliant"],
               ["24/7", "On Call"],
             ].map(([a, b], i) => (
-              <div key={i} className="bg-[#0d0d0d] px-6 py-4 flex-1">
-                <div className="font-display font-black text-xl text-white">{a}</div>
-                <div className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 mt-1">{b}</div>
+              <div key={i} className="bg-brand-surface-alt px-6 py-4 flex-1">
+                <div className="font-display font-black text-xl text-brand-text">{a}</div>
+                <div className="text-[10px] uppercase tracking-[0.2em] text-brand-subtle mt-1">{b}</div>
               </div>
             ))}
           </motion.div>
         </div>
 
         <motion.div {...fadeUp(0.2)} className="relative">
-          <div className="border border-zinc-800">
+          <div className="border border-brand-border">
             <img
               src="https://images.unsplash.com/photo-1755925193287-275aa7fe64f0"
               alt="Rigging safety equipment"
@@ -509,7 +509,7 @@ function About() {
               className="w-full h-[440px] object-cover grayscale hover:grayscale-0 transition-all duration-700"
             />
           </div>
-          <div className="absolute -bottom-5 -left-5 bg-white text-black px-5 py-4 flex items-center gap-3">
+          <div className="absolute -bottom-5 -left-5 bg-brand-accent text-brand-accent-fg px-5 py-4 flex items-center gap-3">
             <Cable size={22} />
             <span className="font-display font-black uppercase tracking-tight text-sm leading-tight">
               Safety
@@ -541,20 +541,20 @@ function TeamProfileCard({ member, index }) {
       <motion.div
         {...fadeUp(index * 0.08)}
         data-testid={`team-card-${member.id}`}
-        className="bg-[#0d0d0d] p-8 flex flex-col items-center text-center min-h-[320px]"
+        className="bg-brand-surface-alt p-8 flex flex-col items-center text-center min-h-[320px]"
       >
         <Avatar className="h-24 w-24 rounded-none">
-          <AvatarFallback className="rounded-none bg-[#1a1a1a] text-white font-display font-black text-2xl">
+          <AvatarFallback className="rounded-none bg-brand-elevated text-brand-text font-display font-black text-2xl">
             {member.initials}
           </AvatarFallback>
         </Avatar>
         <h3 className="font-display font-bold uppercase tracking-tight text-xl mt-6">
           {member.name}
         </h3>
-        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-500 mt-2">
+        <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-brand-subtle mt-2">
           {member.role}
         </p>
-        <p className="mt-4 text-sm text-zinc-400 leading-relaxed">{member.bio}</p>
+        <p className="mt-4 text-sm text-brand-muted leading-relaxed">{member.bio}</p>
       </motion.div>
     );
   }
@@ -585,35 +585,35 @@ function TeamProfileCard({ member, index }) {
       >
         {/* front */}
         <div
-          className="absolute inset-0 bg-[#0d0d0d] p-8 flex flex-col items-center justify-center text-center [backface-visibility:hidden]"
+          className="absolute inset-0 bg-brand-surface-alt p-8 flex flex-col items-center justify-center text-center [backface-visibility:hidden]"
           style={{ backfaceVisibility: "hidden" }}
         >
           <Avatar className="h-24 w-24 rounded-none">
-            <AvatarFallback className="rounded-none bg-[#1a1a1a] text-white font-display font-black text-2xl">
+            <AvatarFallback className="rounded-none bg-brand-elevated text-brand-text font-display font-black text-2xl">
               {member.initials}
             </AvatarFallback>
           </Avatar>
           <h3 className="font-display font-bold uppercase tracking-tight text-xl mt-6">
             {member.name}
           </h3>
-          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-500 mt-2">
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-brand-subtle mt-2">
             {member.role}
           </p>
         </div>
 
         {/* back */}
         <div
-          className="absolute inset-0 bg-[#141414] p-8 flex flex-col justify-center text-center [backface-visibility:hidden]"
+          className="absolute inset-0 bg-brand-surface-hover p-8 flex flex-col justify-center text-center [backface-visibility:hidden]"
           style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
         >
-          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-600">
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-brand-subtle">
             // Placeholder
           </p>
-          <p className="mt-4 text-sm text-zinc-300 leading-relaxed">{member.bio}</p>
-          <p className="mt-6 font-display font-bold uppercase tracking-tight text-lg text-white">
+          <p className="mt-4 text-sm text-brand-muted leading-relaxed">{member.bio}</p>
+          <p className="mt-6 font-display font-bold uppercase tracking-tight text-lg text-brand-text">
             {member.name}
           </p>
-          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-500 mt-1">
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-brand-subtle mt-1">
             {member.role}
           </p>
         </div>
@@ -623,10 +623,12 @@ function TeamProfileCard({ member, index }) {
 }
 
 function Team() {
+  const workWithUsLink = useBrandLink(WORK_WITH_US_PATH);
+
   return (
-    <section id="team" data-testid="team-section" className="bg-[#0c0c0d] border-y border-zinc-900">
+    <section id="team" data-testid="team-section" className="bg-brand-surface border-y border-brand-border">
       <div className="mx-auto max-w-[1400px] px-6 py-24 md:py-32">
-        <motion.p {...fadeUp()} className="text-xs uppercase tracking-[0.3em] text-white">
+        <motion.p {...fadeUp()} className="text-xs uppercase tracking-[0.3em] text-brand-text">
           // The Team
         </motion.p>
         <motion.h2
@@ -636,7 +638,7 @@ function Team() {
           Built By Specialists.
         </motion.h2>
 
-        <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-zinc-900 border border-zinc-900">
+        <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-brand-border border border-brand-border">
           {TEAM.map((member, i) => (
             <TeamProfileCard key={member.id} member={member} index={i} />
           ))}
@@ -644,9 +646,9 @@ function Team() {
 
         <motion.div {...fadeUp(0.4)} className="mt-12">
           <Link
-            to={WORK_WITH_US_PATH}
+            to={workWithUsLink}
             data-testid="team-work-with-us-btn"
-            className="inline-flex bg-white text-black text-sm font-bold uppercase tracking-[0.15em] px-7 py-4 hover:bg-zinc-200 transition-colors"
+            className="inline-flex bg-brand-accent text-brand-accent-fg text-sm font-bold uppercase tracking-[0.15em] px-7 py-4 hover:bg-brand-accent-hover transition-colors"
           >
             Work With Us
           </Link>
@@ -676,10 +678,10 @@ function Quote() {
   };
 
   return (
-    <section id="quote" data-testid="quote-section" className="bg-[#0c0c0d] border-t border-zinc-900">
+    <section id="quote" data-testid="quote-section" className="bg-brand-surface border-t border-brand-border">
       <div className="mx-auto max-w-[1400px] px-6 py-24 md:py-32 grid grid-cols-1 lg:grid-cols-12 gap-12">
         <div className="lg:col-span-5">
-          <motion.p {...fadeUp()} className="text-xs uppercase tracking-[0.3em] text-white">
+          <motion.p {...fadeUp()} className="text-xs uppercase tracking-[0.3em] text-brand-text">
             // Request a Quote
           </motion.p>
           <motion.h2
@@ -690,7 +692,7 @@ function Quote() {
             <br />
             The Build.
           </motion.h2>
-          <motion.p {...fadeUp(0.2)} className="mt-6 text-zinc-400 leading-relaxed max-w-md">
+          <motion.p {...fadeUp(0.2)} className="mt-6 text-brand-muted leading-relaxed max-w-md">
             Send the basics and our rigging lead will reply with a scope and a
             number — usually within one working day.
           </motion.p>
@@ -700,65 +702,65 @@ function Quote() {
           {...fadeUp(0.2)}
           onSubmit={onSubmit}
           data-testid="quote-form"
-          className="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-px bg-zinc-900 border border-zinc-900"
+          className="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-px bg-brand-border border border-brand-border"
         >
-          <div className="bg-[#0a0a0a] p-6">
-            <label className="text-[10px] uppercase tracking-[0.2em] text-zinc-500">Name</label>
+          <div className="bg-brand-bg p-6">
+            <label className="text-[10px] uppercase tracking-[0.2em] text-brand-subtle">Name</label>
             <input
               data-testid="quote-name-input"
               value={form.name}
               onChange={onChange("name")}
               placeholder="Jane Doe"
-              className="mt-2 w-full bg-transparent border-b border-zinc-700 focus:border-white outline-none py-2 text-white placeholder:text-zinc-700"
+              className="mt-2 w-full bg-transparent border-b border-brand-border focus:border-brand-accent outline-none py-2 text-brand-text placeholder:text-brand-subtle"
             />
           </div>
-          <div className="bg-[#0a0a0a] p-6">
-            <label className="text-[10px] uppercase tracking-[0.2em] text-zinc-500">Email</label>
+          <div className="bg-brand-bg p-6">
+            <label className="text-[10px] uppercase tracking-[0.2em] text-brand-subtle">Email</label>
             <input
               data-testid="quote-email-input"
               type="email"
               value={form.email}
               onChange={onChange("email")}
               placeholder="jane@venue.com"
-              className="mt-2 w-full bg-transparent border-b border-zinc-700 focus:border-white outline-none py-2 text-white placeholder:text-zinc-700"
+              className="mt-2 w-full bg-transparent border-b border-brand-border focus:border-brand-accent outline-none py-2 text-brand-text placeholder:text-brand-subtle"
             />
           </div>
-          <div className="bg-[#0a0a0a] p-6 md:col-span-2">
-            <label className="text-[10px] uppercase tracking-[0.2em] text-zinc-500">Event Type</label>
+          <div className="bg-brand-bg p-6 md:col-span-2">
+            <label className="text-[10px] uppercase tracking-[0.2em] text-brand-subtle">Event Type</label>
             <select
               data-testid="quote-type-select"
               value={form.type}
               onChange={onChange("type")}
-              className="mt-2 w-full bg-[#0a0a0a] border-b border-zinc-700 focus:border-white outline-none py-2 text-white"
+              className="mt-2 w-full bg-brand-bg border-b border-brand-border focus:border-brand-accent outline-none py-2 text-brand-text"
             >
               {["Concert / Tour", "Festival", "Corporate / Conference", "Theatre", "Broadcast / Film", "Other"].map(
                 (o) => (
-                  <option key={o} className="bg-[#0a0a0a]">
+                  <option key={o} className="bg-brand-bg">
                     {o}
                   </option>
                 )
               )}
             </select>
           </div>
-          <div className="bg-[#0a0a0a] p-6 md:col-span-2">
-            <label className="text-[10px] uppercase tracking-[0.2em] text-zinc-500">Project Details</label>
+          <div className="bg-brand-bg p-6 md:col-span-2">
+            <label className="text-[10px] uppercase tracking-[0.2em] text-brand-subtle">Project Details</label>
             <textarea
               data-testid="quote-details-input"
               value={form.details}
               onChange={onChange("details")}
               rows={4}
               placeholder="Venue, dates, flown weight, deck size…"
-              className="mt-2 w-full bg-transparent border-b border-zinc-700 focus:border-white outline-none py-2 text-white placeholder:text-zinc-700 resize-none"
+              className="mt-2 w-full bg-transparent border-b border-brand-border focus:border-brand-accent outline-none py-2 text-brand-text placeholder:text-brand-subtle resize-none"
             />
           </div>
-          <div className="bg-[#0a0a0a] p-6 md:col-span-2 flex items-center justify-between flex-wrap gap-4">
-            <span className="font-mono text-[11px] text-zinc-600">
+          <div className="bg-brand-bg p-6 md:col-span-2 flex items-center justify-between flex-wrap gap-4">
+            <span className="font-mono text-[11px] text-brand-subtle">
               {submitted ? "✓ Request logged (prototype)" : "We reply within 1 working day"}
             </span>
             <button
               type="submit"
               data-testid="quote-submit-btn"
-              className="bg-white text-black text-sm font-bold uppercase tracking-[0.15em] px-8 py-4 hover:bg-zinc-200 transition-colors"
+              className="bg-brand-accent text-brand-accent-fg text-sm font-bold uppercase tracking-[0.15em] px-8 py-4 hover:bg-brand-accent-hover transition-colors"
             >
               Send Request
             </button>
@@ -793,18 +795,19 @@ const SOCIALS = [
 ];
 
 function Footer() {
+  const { brand } = useBrand();
   const scrollTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   return (
-    <footer data-testid="footer" className="bg-[#0c0c0d] border-t border-zinc-900 text-white">
+    <footer data-testid="footer" className="bg-brand-surface border-t border-brand-border text-brand-text">
       <div className="mx-auto max-w-[1400px] px-6 py-6 grid grid-cols-1 md:grid-cols-3 items-center gap-6 text-center md:text-left">
         {/* left: legal links */}
-        <div className="flex items-center justify-center md:justify-start gap-3 text-[11px] uppercase tracking-[0.18em] text-zinc-400">
-          <a href="#" className="hover:text-white transition-colors">
+        <div className="flex items-center justify-center md:justify-start gap-3 text-[11px] uppercase tracking-[0.18em] text-brand-muted">
+          <a href="#" className="hover:text-brand-text transition-colors">
             Terms of Use
           </a>
-          <span className="text-zinc-700">|</span>
-          <a href="#" className="hover:text-white transition-colors">
+          <span className="text-brand-subtle">|</span>
+          <a href="#" className="hover:text-brand-text transition-colors">
             Privacy Policy
           </a>
         </div>
@@ -817,16 +820,16 @@ function Footer() {
               href={href}
               aria-label={label}
               data-testid={`footer-social-${label.toLowerCase()}`}
-              className="text-zinc-400 hover:text-white transition-colors"
+              className="text-brand-muted hover:text-brand-text transition-colors"
             >
               <Icon size={20} />
             </a>
           ))}
           <a
-            href={`mailto:${CONTACT_EMAIL}`}
+            href={`mailto:${brand.contactEmail}`}
             aria-label="Email us"
             data-testid="footer-email"
-            className="text-zinc-400 hover:text-white transition-colors"
+            className="text-brand-muted hover:text-brand-text transition-colors"
           >
             <Mail size={20} />
           </a>
@@ -834,15 +837,15 @@ function Footer() {
 
         {/* right: copyright + scroll-to-top */}
         <div className="flex items-center justify-center md:justify-end gap-5">
-          <p className="text-[11px] uppercase tracking-[0.18em] text-zinc-500">
-            Copyright &copy; KOKI&rsquo;S Event 2026
+          <p className="text-[11px] uppercase tracking-[0.18em] text-brand-subtle">
+            Copyright &copy; {brand.legalName} 2026
           </p>
           <button
             type="button"
             onClick={scrollTop}
             data-testid="footer-scroll-top"
             aria-label="Back to top"
-            className="grid place-items-center w-10 h-10 rounded-full border-2 border-zinc-600 text-zinc-400 hover:bg-white hover:text-black hover:border-white transition-colors shrink-0"
+            className="grid place-items-center w-10 h-10 rounded-full border-2 border-brand-border text-brand-muted hover:bg-brand-accent hover:text-brand-accent-fg hover:border-brand-accent transition-colors shrink-0"
           >
             <ChevronUp size={20} />
           </button>
@@ -864,7 +867,7 @@ export default function Landing() {
   }, [introDone]);
 
   return (
-    <div className="bg-[#0a0a0a] text-white min-h-screen">
+    <div className="bg-brand-bg text-brand-text min-h-screen">
       <AnimatePresence>
         {!introDone && (
           <IntroOverlay
