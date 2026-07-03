@@ -23,7 +23,7 @@ export default function WorkWithUs() {
         >
           <ApplicationWizard />
         </DemoPageShell>
-        <Toaster theme="dark" position="top-right" />
+        <Toaster theme="light" position="top-right" />
       </ShowSecurityGate>
     );
   }

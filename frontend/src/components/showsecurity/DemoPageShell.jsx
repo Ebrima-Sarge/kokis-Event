@@ -31,7 +31,7 @@ export default function DemoPageShell({
 
   return (
     <div className="bg-brand-bg text-brand-text min-h-screen">
-      <header className="border-b border-brand-border bg-brand-surface/80 backdrop-blur-sm sticky top-0 z-40">
+      <header className="border-b border-brand-border bg-brand-bg sticky top-0 z-40">
         <div className="mx-auto max-w-[1400px] px-6 py-4 flex items-center justify-between gap-4">
           <Link to={homeLink} className="inline-flex items-center shrink-0">
             <BrandWordmark size="nav" />

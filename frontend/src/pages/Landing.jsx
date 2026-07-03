@@ -161,7 +161,9 @@ function Navbar({ logoTargetRef, visible }) {
   return (
     <header
       data-testid="main-nav"
-      className={`fixed top-0 left-0 right-0 z-50 ${visible ? "" : "invisible pointer-events-none"}`}
+      className={`fixed top-0 left-0 right-0 z-50 ${
+        isShowSecurity ? "bg-brand-bg/95 border-b border-brand-border backdrop-blur-sm" : ""
+      } ${visible ? "" : "invisible pointer-events-none"}`}
     >
       <div className="mx-auto max-w-[1400px] px-6 h-16 flex items-center justify-between">
         {isShowSecurity ? (
@@ -274,7 +276,8 @@ function Navbar({ logoTargetRef, visible }) {
 
 /* ---------------- Hero / Stage (scroll-driven swipe reveal) ---------------- */
 function Hero() {
-  const { brand } = useBrand();
+  const { brand, brandId } = useBrand();
+  const colorHero = brandId === "showsecurity";
   const wrapRef = useRef(null);
   const topRef = useRef(null);
   const baseRef = useRef(null);
@@ -312,14 +315,14 @@ function Hero() {
         <div
           ref={baseRef}
           data-testid="hero-image-brand"
-          className="absolute inset-0 z-0 bg-cover bg-center grayscale"
+          className={`absolute inset-0 z-0 bg-cover bg-center${colorHero ? "" : " grayscale"}`}
           style={{ backgroundImage: `url("${brand.assets.heroBrand}")` }}
         />
         {/* top = raw stagehands frame, wiped away on scroll */}
         <div
           ref={topRef}
           data-testid="hero-image-raw"
-          className="absolute inset-0 z-10 bg-cover bg-center grayscale"
+          className={`absolute inset-0 z-10 bg-cover bg-center${colorHero ? "" : " grayscale"}`}
           style={{ backgroundImage: `url("${brand.assets.heroRaw}")`, clipPath: "inset(0 0 0 0%)" }}
         />
         {/* swipe divider */}
@@ -340,13 +343,13 @@ function Hero() {
           <div className="mx-auto max-w-[1400px] w-full px-6">
             <motion.p
               {...fadeUp(0.1)}
-              className="text-xs uppercase tracking-[0.3em] text-brand-text mb-4"
+              className="text-xs uppercase tracking-[0.3em] text-white mb-4"
             >
               Live Event Production & Rigging
             </motion.p>
             <motion.h1
               {...fadeUp(0.2)}
-              className="font-display font-black uppercase tracking-tighter leading-[0.85] text-5xl md:text-7xl lg:text-8xl max-w-4xl"
+              className="font-display font-black uppercase tracking-tighter leading-[0.85] text-5xl md:text-7xl lg:text-8xl max-w-4xl text-white"
             >
               We Build
               <br />
@@ -356,7 +359,7 @@ function Hero() {
             </motion.h1>
             <motion.p
               {...fadeUp(0.35)}
-              className="mt-6 max-w-md text-sm md:text-base text-brand-muted leading-relaxed"
+              className="mt-6 max-w-md text-sm md:text-base text-zinc-300 leading-relaxed"
             >
               Certified stagehands, riggers and structural crews for tours,
               festivals and broadcast. Scroll to reveal the build.
@@ -372,7 +375,7 @@ function Hero() {
               <a
                 href="#work"
                 data-testid="hero-work-btn"
-                className="border-2 border-brand-border text-brand-text text-sm font-bold uppercase tracking-[0.15em] px-7 py-4 hover:border-brand-accent transition-colors"
+                className="border-2 border-white/70 text-white text-sm font-bold uppercase tracking-[0.15em] px-7 py-4 hover:border-white transition-colors"
               >
                 See Our Work
               </a>
@@ -384,10 +387,10 @@ function Hero() {
         <div
           ref={hintRef}
           data-testid="scroll-hint"
-          className="pointer-events-none absolute bottom-8 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center gap-2 text-brand-muted"
+          className="pointer-events-none absolute bottom-8 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center gap-2 text-zinc-400"
         >
           <span className="text-[10px] uppercase tracking-[0.3em]">Scroll To Reveal</span>
-          <MoveDown size={18} className="animate-bounce text-brand-text" />
+          <MoveDown size={18} className="animate-bounce text-white" />
         </div>
       </div>
     </section>
@@ -915,6 +918,7 @@ function Footer() {
 export default function Landing() {
   const logoTargetRef = useRef(null);
   const [introDone, setIntroDone] = useState(false);
+  const { brandId } = useBrand();
 
   useEffect(() => {
     document.body.style.overflow = introDone ? "" : "hidden";
@@ -934,7 +938,7 @@ export default function Landing() {
           />
         )}
       </AnimatePresence>
-      <Toaster theme="dark" position="top-right" />
+      <Toaster theme={brandId === "showsecurity" ? "light" : "dark"} position="top-right" />
       <Navbar logoTargetRef={logoTargetRef} visible={introDone} />
       <main>
         <Hero />
