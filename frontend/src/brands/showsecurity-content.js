@@ -13,36 +13,48 @@ export const SHOWSECURITY_SERVICES = [
     icon: Shield,
     title: "Security Guards",
     desc: "Experienced säkerhetsvärdar with high service levels across Stockholm, Göteborg, and Malmö.",
+    image:
+      "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?crop=entropy&cs=srgb&fm=jpg&q=85",
   },
   {
     id: "order-guards",
     icon: ShieldCheck,
     title: "Order Guards",
     desc: "Authorized ordningsvakter — a key part of our full event security solution nationwide.",
+    image:
+      "https://images.unsplash.com/photo-1560518883-ce09059eeffa?crop=entropy&cs=srgb&fm=jpg&q=85",
   },
   {
     id: "stage-crew",
     icon: HardHat,
     title: "Stage Crew",
     desc: "Scenpersonal for build and strike — from club rooms to arena main stages.",
+    image:
+      "https://images.pexels.com/photos/2747443/pexels-photo-2747443.jpeg?auto=compress&cs=tinysrgb&w=1200",
   },
   {
     id: "medical",
     icon: HeartPulse,
     title: "Medical Staff",
     desc: "Licensed nurses and doctors with dedicated event-medicine experience on site.",
+    image:
+      "https://images.unsplash.com/photo-1576765608535-156900045759?crop=entropy&cs=srgb&fm=jpg&q=85",
   },
   {
     id: "rental",
     icon: Package,
     title: "Equipment Rental",
     desc: "EPS GIGS stage barriers — internationally certified crowd-control and stage fencing.",
+    image:
+      "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?crop=entropy&cs=srgb&fm=jpg&q=85",
   },
   {
     id: "consulting",
     icon: ClipboardList,
     title: "Consulting",
     desc: "Planning, analyses, permit applications, and operational leadership from desk to show day.",
+    image:
+      "https://images.unsplash.com/photo-1552664730-d307ca884978?crop=entropy&cs=srgb&fm=jpg&q=85",
   },
 ];
 
