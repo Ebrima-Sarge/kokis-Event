@@ -9,6 +9,8 @@ import { useBrand } from "@/hooks/useBrand";
 import { useBrandLink } from "@/hooks/useBrandLink";
 import { WORK_WITH_US_PATH } from "@/constants/site";
 import { SHOWSECURITY_NAV } from "@/constants/showsecurity-routes";
+import ShowSecurityLanding from "@/components/showsecurity/ShowSecurityLanding";
+import { fadeUp } from "@/lib/motion";
 import {
   NavigationMenu,
   NavigationMenuList,
@@ -127,15 +129,6 @@ const TEAM = [
     bio: "Truss hangs, distro, and cable management for broadcast and live events.",
   },
 ];
-
-function fadeUp(delay = 0) {
-  return {
-    initial: { opacity: 0, y: 28 },
-    whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true, margin: "-80px" },
-    transition: { duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] },
-  };
-}
 
 /* ---------------- Navbar ---------------- */
 function Navbar({ logoTargetRef, visible }) {
@@ -942,12 +935,18 @@ export default function Landing() {
       <Navbar logoTargetRef={logoTargetRef} visible={introDone} />
       <main>
         <Hero />
-        <Stats />
-        <Services />
-        <Work />
-        <About />
-        <Team />
-        <Quote />
+        {brandId === "showsecurity" ? (
+          <ShowSecurityLanding />
+        ) : (
+          <>
+            <Stats />
+            <Services />
+            <Work />
+            <About />
+            <Team />
+            <Quote />
+          </>
+        )}
       </main>
       <Footer />
     </div>

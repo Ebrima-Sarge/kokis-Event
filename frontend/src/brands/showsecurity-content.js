@@ -5,6 +5,9 @@ import {
   HeartPulse,
   Package,
   ClipboardList,
+  Clock,
+  Handshake,
+  Globe,
 } from "lucide-react";
 
 export const SHOWSECURITY_SERVICES = [
@@ -167,3 +170,76 @@ export const SHOWSECURITY_ROLES = [
   "Stage Crew",
   "Medical Staff",
 ];
+
+export const SHOWSECURITY_VALUE_PILLARS = [
+  {
+    id: "efficiency",
+    icon: Clock,
+    title: "Save Time & Money",
+    desc: "Cost-effective project analyses and support at every step — from planning through execution and close-out.",
+  },
+  {
+    id: "partnership",
+    icon: Handshake,
+    title: "We Help You Right",
+    desc: "Close collaboration with clients and clear communication on every project, nationwide.",
+  },
+  {
+    id: "experience",
+    icon: Globe,
+    title: "Experience",
+    desc: "Broad expertise across concerts, festivals, sport, and corporate events — in Sweden and internationally.",
+  },
+];
+
+export const SHOWSECURITY_LANDING_SECTIONS = {
+  services: {
+    overline: "// Our Services",
+    title: ["Everything Your", "Event Needs"],
+    description:
+      "Guards, ordningsvakter, stage crew, medical staff, barriers, and consulting — one complete security solution.",
+    linkLabel: "View All Services",
+  },
+  events: {
+    overline: "// Upcoming Events",
+    title: ["On The", "Calendar"],
+    description:
+      "Placeholder listings for concerts, festivals, and sport events our crews secure across Sweden.",
+    linkLabel: "View All Events",
+  },
+  expertise: {
+    overline: "// Our Expertise",
+    title: ["Secure The Event", "From Plan To Show Day"],
+    description:
+      "Show Security is Sweden's leading provider of event security and stage production personnel. We deliver over 550 music and sport events annually — from club rooms to arena headline shows and major festivals.",
+    image:
+      "https://usercontent.one/wp/www.showsecurity.se/wp-content/uploads/2019/01/DSC01207.jpg",
+    badges: [
+      ["Authorized", "Security Company"],
+      ["550+", "Events Per Year"],
+      ["Nationwide", "Coverage"],
+    ],
+  },
+  partners: {
+    overline: "// Our Partners",
+    title: ["Trusted By", "Sweden's Best"],
+    description:
+      "From the smallest venues to the largest arenas — partners we work with on secure, successful events.",
+    linkLabel: "View All Partners",
+  },
+  cta: {
+    overline: "// Join The Team",
+    title: "Work With Show Security",
+    description:
+      "Apply for open shifts or register as a member to receive job offers at events across Sweden.",
+    linkLabel: "Work With Us",
+  },
+  contact: {
+    overline: "// Get In Touch",
+    title: ["Secure Your", "Next Event"],
+    description:
+      "Send the basics and our team will reply with scope and staffing options — usually within one working day.",
+    eventTypes: ["Concert", "Festival", "Sport", "Corporate", "Other"],
+    detailsPlaceholder: "Event name, venue, dates, staff needed…",
+  },
+};
