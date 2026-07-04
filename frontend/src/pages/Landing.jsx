@@ -195,7 +195,7 @@ function Navbar({ logoTargetRef, visible }) {
                       <Link
                         to={n.to}
                         data-testid={`nav-${n.label.toLowerCase().replace(/\s+/g, "-")}`}
-                        className="glass-nav inline-flex items-center rounded-full px-5 py-2 text-[11px] uppercase tracking-[0.2em] text-brand-muted hover:text-brand-text"
+                        className="glass-nav inline-flex items-center rounded-full px-5 py-2 text-[11px] uppercase tracking-[0.2em]"
                       >
                         {n.label}
                       </Link>
@@ -207,7 +207,7 @@ function Navbar({ logoTargetRef, visible }) {
                     <NavigationMenuLink
                       href={n.href}
                       data-testid={`nav-${n.label.toLowerCase()}`}
-                      className="glass-nav inline-flex items-center rounded-full px-5 py-2 text-[11px] uppercase tracking-[0.2em] text-brand-muted hover:text-brand-text"
+                      className="glass-nav inline-flex items-center rounded-full px-5 py-2 text-[11px] uppercase tracking-[0.2em]"
                     >
                       {n.label}
                     </NavigationMenuLink>
@@ -218,7 +218,7 @@ function Navbar({ logoTargetRef, visible }) {
                 <NavigationMenuLink
                   href="#quote"
                   data-testid="nav-quote-btn"
-                  className="glass-nav inline-flex items-center rounded-full px-5 py-2 text-[11px] font-bold uppercase tracking-[0.2em] text-brand-text bg-brand-accent/15 hover:bg-brand-accent/25"
+                  className="glass-nav inline-flex items-center rounded-full px-5 py-2 text-[11px] font-bold uppercase tracking-[0.2em]"
                 >
                   Request Quote
                 </NavigationMenuLink>
@@ -244,7 +244,7 @@ function Navbar({ logoTargetRef, visible }) {
                   key={n.label}
                   to={n.to}
                   onClick={() => setOpen(false)}
-                  className="glass-nav rounded-full px-4 py-3 text-center text-sm uppercase tracking-[0.2em] text-brand-muted hover:text-brand-text"
+                  className="glass-nav rounded-full px-4 py-3 text-center text-sm uppercase tracking-[0.2em]"
                 >
                   {n.label}
                 </Link>
@@ -254,7 +254,7 @@ function Navbar({ logoTargetRef, visible }) {
                   key={n.label}
                   href={n.href}
                   onClick={() => setOpen(false)}
-                  className="glass-nav rounded-full px-4 py-3 text-center text-sm uppercase tracking-[0.2em] text-brand-muted hover:text-brand-text"
+                  className="glass-nav rounded-full px-4 py-3 text-center text-sm uppercase tracking-[0.2em]"
                 >
                   {n.label}
                 </a>
@@ -263,7 +263,7 @@ function Navbar({ logoTargetRef, visible }) {
             <a
               href="#quote"
               onClick={() => setOpen(false)}
-              className="glass-nav rounded-full px-4 py-3 text-center text-sm font-bold uppercase tracking-[0.15em] text-brand-text bg-brand-accent/15 hover:bg-brand-accent/25"
+              className="glass-nav rounded-full px-4 py-3 text-center text-sm font-bold uppercase tracking-[0.15em]"
             >
               Request Quote
             </a>

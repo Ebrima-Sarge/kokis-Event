@@ -9,9 +9,7 @@ function NavPill({ to, active, children }) {
     <Link
       to={to}
       className={`glass-nav inline-flex items-center rounded-full px-4 py-2 text-[11px] uppercase tracking-[0.18em] whitespace-nowrap transition-colors ${
-        active
-          ? "text-brand-text bg-brand-accent/20 border-brand-accent/40"
-          : "text-brand-muted hover:text-brand-text"
+        active ? "ring-2 ring-brand-accent-fg/30" : ""
       }`}
     >
       {children}
