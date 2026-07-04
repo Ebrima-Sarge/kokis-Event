@@ -162,7 +162,7 @@ function Navbar({ logoTargetRef, visible }) {
     <header
       data-testid="main-nav"
       className={`fixed top-0 left-0 right-0 z-50 ${
-        isShowSecurity ? "bg-brand-bg/95 border-b border-brand-border backdrop-blur-sm" : ""
+        isShowSecurity ? "bg-brand-bg/95 backdrop-blur-sm" : ""
       } ${visible ? "" : "invisible pointer-events-none"}`}
     >
       <div className="mx-auto max-w-[1400px] px-6 h-16 flex items-center justify-between">
@@ -237,7 +237,7 @@ function Navbar({ logoTargetRef, visible }) {
       </div>
 
       {open && (
-        <div className="md:hidden glass-nav border-t border-brand-text/10 px-6 py-4 flex flex-col gap-3">
+        <div className="md:hidden glass-nav px-6 py-4 flex flex-col gap-3">
           {isShowSecurity
             ? showSecurityLinks.map((n) => (
                 <Link
